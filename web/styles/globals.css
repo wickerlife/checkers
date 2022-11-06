@@ -2,12 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --russianviolet: #210440;
+  --mistyrose: #FEE1D7;
+  --vividtangerine: #FDB095;
+  --nypink: #E5958E;
+  --selectiveyellow: #FFBA00;
+}
+
 html,
 body {
+  background: var(--mistyrose);
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 a {
@@ -20,11 +28,5 @@ a {
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+
 }

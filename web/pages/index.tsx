@@ -1,15 +1,7 @@
-import React, { Ref, Suspense, useRef } from "react";
+import React, { Suspense } from "react";
+import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
-
-// Components
-import { Board } from "../components/game/Board";
-import { OrbitControls, softShadows, useHelper } from "@react-three/drei";
-import {
-  CameraHelper,
-  DirectionalLight,
-  DirectionalLightHelper,
-  OrthographicCamera,
-} from "three";
+import { OrbitControls, softShadows } from "@react-three/drei";
 import {
   Bloom,
   DepthOfField,
@@ -17,46 +9,13 @@ import {
   Vignette,
 } from "@react-three/postprocessing";
 
-//softShadows();
-
-const Plane = () => {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-      <planeBufferGeometry attach="geometry" args={[100, 100]} />
-      <shadowMaterial attach="material" transparent opacity={0.4} />
-    </mesh>
-  );
-};
-
-const Light = () => {
-  const light = useRef() as Ref<DirectionalLight>;
-  const camera = useRef() as Ref<OrthographicCamera>;
-  //useHelper(camera, CameraHelper);
-  //useHelper(light, DirectionalLightHelper);
-  return (
-    <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[-10, 0, -20]} color="white" intensity={2.5} />
-      <pointLight position={[0, -10, 0]} intensity={1.5} />
-      <directionalLight
-        ref={light}
-        castShadow
-        position={[10, 10, -10]}
-        intensity={1.5}
-        shadow-mapSize-width={2024}
-        shadow-mapSize-height={2024}
-      >
-        <orthographicCamera
-          ref={camera}
-          attach="shadow-camera"
-          args={[-10, 10, 10, -10]}
-        />
-      </directionalLight>
-    </>
-  );
-};
+// Components
+import { Board } from "../components/three/Board";
+import { Light } from "../components/three/Light";
 
 export default function Home() {
+  const [modal, showModal] = useState(false);
+
   return (
     <div className="fixed w-screen h-screen place-content-center">
       <Canvas
@@ -65,12 +24,13 @@ export default function Home() {
         camera={{ position: [10, 20, 20], zoom: 30 }}
         gl={{ preserveDrawingBuffer: true }}
       >
-        {/** Lighting */}
+        {/** Scene Lighting */}
         <Light></Light>
-        <Plane />
-        <Board></Board>
-        <gridHelper args={[100, 100, `grey`, `grey`]} position={[0, -0.1, 0]} />
 
+        {/* Checkers Board (pieces included) */}
+        <Board></Board>
+
+        {/* Orbit controls allows the user to rotate the visual horizontally */}
         <OrbitControls
           autoRotate={true}
           autoRotateSpeed={-0.7}
@@ -82,6 +42,8 @@ export default function Home() {
           minPolarAngle={Math.PI / 3}
           maxPolarAngle={Math.PI / 3}
         />
+
+        {/* Visual effects: Glow and Vignette around the corners  */}
         <Suspense fallback={null}>
           <EffectComposer resolutionScale={1}>
             <Bloom luminanceThreshold={0} luminanceSmoothing={2} height={400} />
@@ -89,6 +51,8 @@ export default function Home() {
           </EffectComposer>
         </Suspense>
       </Canvas>
+
+      {/* Overlay message: Press enter to start playing */}
       <div className="fixed flex w-full bottom-20 place-content-center">
         <p className="text-gray-500 align-middle dark:text-gray-400">
           Please press{" "}
@@ -98,6 +62,9 @@ export default function Home() {
           to start a new game...
         </p>
       </div>
+
+      {/* Modal screen to allow choice of game mode: One-device or Multi-device */}
+      {modal ? <div>Modal</div> : null}
     </div>
   );
 }

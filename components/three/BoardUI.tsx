@@ -1,6 +1,6 @@
 import React from "react";
 import { Euler, Vector3 } from "three";
-import { Piece } from "./Piece";
+import { PieceUI } from "./PieceUI";
 
 const commonMaterialProps = {
   metalness: 0,
@@ -14,12 +14,19 @@ const edgeDefaultLength = 8;
 const edgeDefaultHeight = 0.2;
 const edgeDefaultWidth = 0.5;
 
-const boardColor = "#FDB095";
-const whiteColor = "#FEE1D7";
-const blackColor = "#210440";
-const yellow = "#FFBA00";
+import { Board } from "../../models/Board";
+import {
+  mistyrose,
+  russianviolet,
+  selectiveyellow,
+  vividtangerine,
+} from "../../utils/colors";
 
-export const Board = () => {
+interface BoardParams {
+  board: Board;
+}
+
+export const BoardUI = ({ board }: BoardParams) => {
   return (
     <group>
       {/* Board sides */}
@@ -67,7 +74,7 @@ export const Board = () => {
             <boxBufferGeometry args={args} />
             <meshStandardMaterial
               {...commonMaterialProps}
-              color={boardColor}
+              color={vividtangerine}
               transparent={false}
               opacity={1}
             />
@@ -90,10 +97,10 @@ export const Board = () => {
                 <meshStandardMaterial
                   {...((x + y) % 2 === 0
                     ? {
-                        color: whiteColor,
+                        color: mistyrose,
                       }
                     : {
-                        color: blackColor,
+                        color: russianviolet,
                       })}
                   {...commonMaterialProps}
                 />
@@ -104,16 +111,14 @@ export const Board = () => {
       )}
 
       {/* Board pieces */}
-      {new Array(64).fill(0).map((_, index) => {
-        let possible = false;
-        const i = Math.floor(index / 8);
-        const j = index % 8;
-
+      {board.pieces.map((piece) => {
         return (
-          <Piece
+          <PieceUI
             scale={new Vector3(0.25, 0.1, 0.25)}
-            color={yellow}
-            position={new Vector3(j - 3.5, 0.1, i - 3.5)}
+            color={piece!.color}
+            position={
+              new Vector3(piece!.position.x - 3.5, 0.1, piece!.position.y - 3.5)
+            }
           />
         );
       })}

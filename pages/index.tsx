@@ -10,25 +10,29 @@ import {
 } from "@react-three/postprocessing";
 
 // Components
-import { Board } from "../components/three/Board";
+import { BoardUI } from "../components/three/BoardUI";
 import { Light } from "../components/three/Light";
+
+// Models
+import { Board as BoardModel } from "../models/Board";
 
 export default function Home() {
   const [modal, showModal] = useState(false);
+  const dsiplayBoard = BoardModel.randomBoard();
 
   return (
     <div className="fixed w-screen h-screen place-content-center">
       <Canvas
         shadows
         dpr={[1, 2]}
-        camera={{ position: [10, 20, 20], zoom: 30 }}
+        camera={{ position: [10, 20, 20], zoom: 25 }}
         gl={{ preserveDrawingBuffer: true }}
       >
         {/** Scene Lighting */}
         <Light></Light>
 
         {/* Checkers Board (pieces included) */}
-        <Board></Board>
+        <BoardUI board={dsiplayBoard}></BoardUI>
 
         {/* Orbit controls allows the user to rotate the visual horizontally */}
         <OrbitControls

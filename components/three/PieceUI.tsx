@@ -17,7 +17,7 @@ type GLTFResult = GLTF & {
   materials: {};
 };
 
-export const Piece = ({ color, scale, position }: PieceInterface) => {
+export const PieceUI = ({ color, scale, position }: PieceInterface) => {
   const { nodes, materials } = useGLTF("/models/piece.glb") as GLTFResult;
   const pieceRef = useRef(null);
   return (

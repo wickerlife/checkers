@@ -1,0 +1,112 @@
+import { nypink, russianviolet, selectiveyellow } from "../utils/colors";
+import { Piece } from "./Piece";
+import { Position } from "./Position";
+
+export class Board {
+  pieces: Array<Piece>;
+
+  constructor(pieces: Array<Piece>) {
+    this.pieces = pieces;
+  }
+
+  get layout() {
+    let grid: Array<Array<Piece | undefined>> = Array(
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    );
+    this.pieces.map((piece) => {
+      grid[piece.position.y][piece.position.x] = piece;
+    });
+    return grid;
+  }
+
+  hasPiece(position: Position): boolean {
+    if (this.layout[position.y][position.x] != undefined) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Generates an initial checkers board layout
+   * @returns Board
+   */
+  static startBoard(): Board {
+    let pieceIndex = 0;
+    // Loop through an 8x8 bidimensional array
+    let pieces = Array(24);
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        if (y < 3 && Position.isValidPosition(x, y)) {
+          // Draw black pieces
+          pieceIndex += 1;
+          pieces.push(new Piece(pieceIndex, nypink, new Position(x, y)));
+        } else if (y > 4 && Position.isValidPosition(x, y)) {
+          // Draw white pieces
+          pieceIndex += 1;
+          pieces.push(
+            new Piece(pieceIndex, selectiveyellow, new Position(x, y))
+          );
+        }
+      }
+    }
+    return new Board(pieces);
+  }
+
+  /**
+   * Generates an random checkers board layout
+   * @returns Board
+   */
+  static randomBoard(): Board {
+    let pieces: Array<Piece> = Array();
+    let min = 8;
+    let blackPieces = Array(Math.floor(Math.random() * (12 - min + 1) + min));
+    let whitePieces = Array(Math.floor(Math.random() * (12 - min + 1) + min));
+
+    let grid: Array<Array<Piece | undefined>> = Array(
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    );
+
+    let black = 0;
+    for (
+      let index = 0;
+      index < blackPieces.length + whitePieces.length;
+      index++
+    ) {
+      var found = false;
+      while (found == false) {
+        let x = Math.floor(Math.random() * 8);
+        let y = Math.floor(Math.random() * 8);
+
+        if (Position.isValidPosition(x, y) && grid[y][x] == undefined) {
+          found = true;
+          let color: string;
+          if (black < blackPieces.length) {
+            color = selectiveyellow;
+            black += 1;
+          } else {
+            color = nypink;
+          }
+          let piece = new Piece(index, color, new Position(x, y));
+          grid[y][x] = piece;
+          pieces.push(piece);
+        }
+      }
+    }
+
+    return new Board(pieces);
+  }
+}

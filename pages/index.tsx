@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, softShadows } from "@react-three/drei";
@@ -16,11 +16,23 @@ import { Light } from "../components/three/Light";
 // Models
 import { Board as BoardModel } from "../models/Board";
 
-export default function Home() {
-  const [modal, showModal] = useState(false);
-  const dsiplayBoard = BoardModel.randomBoard();
+// State Toms
+import { boardAtom } from "../utils/atoms";
+import { useAtom } from "jotai";
 
-  return (
+export default function Home() {
+  // Load initial state
+  const [modal, showModal] = useState(false);
+  const [board, setBoard] = useAtom(boardAtom);
+
+  // Update board state with mock game board layout
+
+  useEffect(() => {
+    const dsiplayBoard = BoardModel.randomBoard();
+    setBoard(dsiplayBoard);
+  }, []);
+
+  return board ? (
     <div className="fixed w-screen h-screen place-content-center">
       <Canvas
         shadows
@@ -32,7 +44,7 @@ export default function Home() {
         <Light></Light>
 
         {/* Checkers Board (pieces included) */}
-        <BoardUI board={dsiplayBoard}></BoardUI>
+        <BoardUI></BoardUI>
 
         {/* Orbit controls allows the user to rotate the visual horizontally */}
         <OrbitControls
@@ -70,5 +82,5 @@ export default function Home() {
       {/* Modal screen to allow choice of game mode: One-device or Multi-device */}
       {modal ? <div>Modal</div> : null}
     </div>
-  );
+  ) : null;
 }

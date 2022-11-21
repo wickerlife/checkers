@@ -26,11 +26,24 @@ export class Board {
     return grid;
   }
 
+  get selected() {
+    return this.pieces.find((piece) => piece.isselected == true);
+  }
+
+  /**
+   * Checks if a Piece is present at the specified Position
+   * @param position
+   * @returns boolean True if
+   */
   hasPiece(position: Position): boolean {
     if (this.layout[position.y][position.x] != undefined) {
       return true;
     }
     return false;
+  }
+
+  possibleMoves(piece: Piece): Array<Position> {
+    throw Error;
   }
 
   /**

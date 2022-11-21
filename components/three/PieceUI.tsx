@@ -3,11 +3,14 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import React, { useRef } from "react";
 import { Vector3 } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { BooleanLiteral } from "typescript";
 
 interface PieceInterface {
   color: string;
   scale: Vector3;
   position: Vector3;
+  isselected?: boolean;
+  isdama?: boolean;
 }
 
 type GLTFResult = GLTF & {
@@ -17,7 +20,18 @@ type GLTFResult = GLTF & {
   materials: {};
 };
 
-export const PieceUI = ({ color, scale, position }: PieceInterface) => {
+/**
+ * Dumb component
+ * @param color, scale, position, isselected, isdama
+ * @returns JSX.Element
+ */
+export const PieceUI = ({
+  color,
+  scale,
+  position,
+  isselected = false,
+  isdama = false,
+}: PieceInterface) => {
   const { nodes, materials } = useGLTF("/models/piece.glb") as GLTFResult;
   const pieceRef = useRef(null);
   return (

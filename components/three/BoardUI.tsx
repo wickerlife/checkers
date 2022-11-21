@@ -21,13 +21,19 @@ import {
   selectiveyellow,
   vividtangerine,
 } from "../../utils/colors";
+import { boardAtom, pieceAtomList } from "../../utils/atoms";
+import { useAtom, useAtomValue } from "jotai";
 
-interface BoardParams {
-  board: Board;
-}
+/**
+ * Stateful component
+ * @param param0
+ * @returns JSX.Element
+ */
+export const BoardUI = () => {
+  const [board, setBoard] = useAtom(boardAtom);
+  const [pieceAtoms] = useAtom(pieceAtomList);
 
-export const BoardUI = ({ board }: BoardParams) => {
-  return (
+  return board ? (
     <group>
       {/* Board sides */}
       {[0, 1, 2, 3].map((index) => {
@@ -111,17 +117,19 @@ export const BoardUI = ({ board }: BoardParams) => {
       )}
 
       {/* Board pieces */}
-      {board.pieces.map((piece) => {
+      {pieceAtoms.map((pieceAtom) => {
+        const piece = useAtomValue(pieceAtom);
+
         return (
           <PieceUI
             scale={new Vector3(0.25, 0.1, 0.25)}
-            color={piece!.color}
+            color={piece.color}
             position={
-              new Vector3(piece!.position.x - 3.5, 0.1, piece!.position.y - 3.5)
+              new Vector3(piece.position.x - 3.5, 0.1, piece.position.y - 3.5)
             }
           />
         );
       })}
     </group>
-  );
+  ) : null;
 };

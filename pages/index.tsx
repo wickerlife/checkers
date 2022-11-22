@@ -26,7 +26,7 @@ export default function Home() {
   // Load initial state
   const [modal, showModal] = useState(false);
   const [board, setBoard] = useAtom(boardAtom);
-  const selected = useAtomValue(selectedAtom);
+  const [selected, setSelected] = useAtom(selectedAtom);
 
   // Update board state with mock game board layout
   useEffect(() => {
@@ -41,6 +41,7 @@ export default function Home() {
         dpr={[1, 2]}
         camera={{ position: [10, 20, 20], zoom: 25 }}
         gl={{ preserveDrawingBuffer: true }}
+        onPointerMissed={() => setSelected(null)}
       >
         {/** Scene Lighting */}
         <Light></Light>
@@ -52,7 +53,7 @@ export default function Home() {
           <OrbitControls
             autoRotate={true}
             autoRotateSpeed={-0.7}
-            zoomSpeed={0.25}
+            zoomSpeed={0.6}
             minZoom={40}
             maxZoom={140}
             enablePan={false}
@@ -76,7 +77,7 @@ export default function Home() {
               <Vignette offset={0.5} darkness={0.6} eskil={false} />
               <Outline
                 //selection={selected ? selected.ref : []}
-                edgeStrength={10}
+                edgeStrength={5}
                 xRay={false}
               />
             </EffectComposer>

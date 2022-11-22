@@ -46,14 +46,6 @@ export class Board {
     throw Error;
   }
 
-  select(piece: Piece) {
-    this.selected = piece;
-  }
-
-  deselect() {
-    this.selected = null;
-  }
-
   /**
    * Generates an initial checkers board layout
    * @returns Board

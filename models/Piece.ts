@@ -25,8 +25,4 @@ export class Piece {
   move() {}
 
   upgradeToDama() {}
-
-  select() {}
-
-  deselect() {}
 }

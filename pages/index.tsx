@@ -8,6 +8,7 @@ import {
   EffectComposer,
   Outline,
   Vignette,
+  Selection,
 } from "@react-three/postprocessing";
 
 // Components
@@ -43,39 +44,44 @@ export default function Home() {
       >
         {/** Scene Lighting */}
         <Light></Light>
+        <Selection>
+          {/* Checkers Board (pieces included) */}
+          <BoardUI></BoardUI>
 
-        {/* Checkers Board (pieces included) */}
-        <BoardUI></BoardUI>
+          {/* Orbit controls allows the user to rotate the visual horizontally */}
+          <OrbitControls
+            autoRotate={true}
+            autoRotateSpeed={-0.7}
+            zoomSpeed={0.25}
+            minZoom={40}
+            maxZoom={140}
+            enablePan={false}
+            dampingFactor={0.05}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 3}
+          />
 
-        {/* Orbit controls allows the user to rotate the visual horizontally */}
-        <OrbitControls
-          autoRotate={true}
-          autoRotateSpeed={-0.7}
-          zoomSpeed={0.25}
-          minZoom={40}
-          maxZoom={140}
-          enablePan={false}
-          dampingFactor={0.05}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 3}
-        />
-
-        {/* Visual effects: Glow and Vignette around the corners  */}
-        <Suspense fallback={null}>
-          <EffectComposer
-            resolutionScale={1}
-            multisampling={8}
-            autoClear={false}
-          >
-            <Bloom luminanceThreshold={0} luminanceSmoothing={2} height={400} />
-            <Vignette offset={0.5} darkness={0.6} eskil={false} />
-            <Outline
-              selection={selected ? selected.ref : []}
-              edgeStrength={10}
-              xRay={false}
-            />
-          </EffectComposer>
-        </Suspense>
+          {/* Visual effects: Glow and Vignette around the corners  */}
+          <Suspense fallback={null}>
+            <EffectComposer
+              resolutionScale={1}
+              multisampling={8}
+              autoClear={false}
+            >
+              <Bloom
+                luminanceThreshold={0}
+                luminanceSmoothing={2}
+                height={400}
+              />
+              <Vignette offset={0.5} darkness={0.6} eskil={false} />
+              <Outline
+                //selection={selected ? selected.ref : []}
+                edgeStrength={10}
+                xRay={false}
+              />
+            </EffectComposer>
+          </Suspense>
+        </Selection>
       </Canvas>
 
       {/* Overlay message: Press enter to start playing */}

@@ -31,28 +31,32 @@ type GLTFResult = GLTF & {
 export const PieceUI = ({ pieceAtom }: PieceInterface) => {
   const { nodes, materials } = useGLTF("/models/piece.glb") as GLTFResult;
   const piece = useAtomValue(pieceAtom);
-  const setSelected = useSetAtom(selectedAtom);
+  const [selected, setSelected] = useAtom(selectedAtom);
 
   return (
     <group>
-      {/* <Select enabled={}> */}
-      <mesh
-        ref={piece.ref}
-        scale={new Vector3(0.25, 0.05, 0.25)}
-        position={
-          new Vector3(piece.position.x - 3.5, 0.15, piece.position.y - 3.5)
-        }
-        castShadow
-        receiveShadow
-        geometry={nodes.piece.geometry}
-        onClick={(e) => {
-          console.log("PIECE CLICKED ", piece.id);
-          setSelected(piece);
-        }}
-      >
-        <meshStandardMaterial color={piece.color} metalness={0} roughness={0} />
-      </mesh>
-      {/* </Select> */}
+      <Select enabled={selected?.id == piece.id}>
+        <mesh
+          ref={piece.ref}
+          scale={new Vector3(0.3, 0.05, 0.3)}
+          position={
+            new Vector3(piece.position.x - 3.5, 0.15, piece.position.y - 3.5)
+          }
+          castShadow
+          receiveShadow
+          geometry={nodes.piece.geometry}
+          onClick={(e) => {
+            console.log("PIECE CLICKED ", piece.id);
+            setSelected(piece);
+          }}
+        >
+          <meshStandardMaterial
+            color={piece.color}
+            metalness={0}
+            roughness={0}
+          />
+        </mesh>
+      </Select>
     </group>
   );
 };

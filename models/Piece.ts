@@ -1,3 +1,5 @@
+import React, { RefObject } from "react";
+import { useRef } from "react";
 import { Position } from "./Position";
 
 export class Piece {
@@ -5,12 +7,19 @@ export class Piece {
   color: string;
   position: Position;
   isdama: boolean;
-  isselected: boolean;
+  ref: any;
 
-  constructor(id: number, color: string, position: Position) {
+  constructor(
+    id: number,
+    color: string,
+    position: Position,
+    isdama: boolean = false
+  ) {
     this.id = id;
     this.color = color;
     this.position = position;
+    this.isdama = isdama;
+    this.ref = React.createRef();
   }
 
   move() {}

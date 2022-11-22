@@ -1,12 +1,16 @@
+import { useSetAtom } from "jotai";
+import { selectedAtom } from "../utils/atoms";
 import { nypink, russianviolet, selectiveyellow } from "../utils/colors";
 import { Piece } from "./Piece";
 import { Position } from "./Position";
 
 export class Board {
   pieces: Array<Piece>;
+  selected: Piece | null;
 
   constructor(pieces: Array<Piece>) {
     this.pieces = pieces;
+    this.selected = null;
   }
 
   get layout() {
@@ -26,10 +30,6 @@ export class Board {
     return grid;
   }
 
-  get selected() {
-    return this.pieces.find((piece) => piece.isselected == true);
-  }
-
   /**
    * Checks if a Piece is present at the specified Position
    * @param position
@@ -44,6 +44,14 @@ export class Board {
 
   possibleMoves(piece: Piece): Array<Position> {
     throw Error;
+  }
+
+  select(piece: Piece) {
+    this.selected = piece;
+  }
+
+  deselect() {
+    this.selected = null;
   }
 
   /**

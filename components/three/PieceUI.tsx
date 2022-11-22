@@ -1,16 +1,19 @@
 import { useGLTF } from "@react-three/drei";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import React, { useRef } from "react";
+import {
+  Bloom,
+  EffectComposer,
+  Outline,
+  Select,
+} from "@react-three/postprocessing";
+import { Atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import React, { Ref, useRef } from "react";
 import { Vector3 } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
-import { BooleanLiteral } from "typescript";
+import { Piece } from "../../models/Piece";
+import { boardAtom, selectedAtom } from "../../utils/atoms";
 
 interface PieceInterface {
-  color: string;
-  scale: Vector3;
-  position: Vector3;
-  isselected?: boolean;
-  isdama?: boolean;
+  pieceAtom: Atom<Piece>;
 }
 
 type GLTFResult = GLTF & {
@@ -21,31 +24,35 @@ type GLTFResult = GLTF & {
 };
 
 /**
- * Dumb component
- * @param color, scale, position, isselected, isdama
+ * Stateful component
+ * @param {atom}
  * @returns JSX.Element
  */
-export const PieceUI = ({
-  color,
-  scale,
-  position,
-  isselected = false,
-  isdama = false,
-}: PieceInterface) => {
+export const PieceUI = ({ pieceAtom }: PieceInterface) => {
   const { nodes, materials } = useGLTF("/models/piece.glb") as GLTFResult;
-  const pieceRef = useRef(null);
+  const piece = useAtomValue(pieceAtom);
+  const setSelected = useSetAtom(selectedAtom);
+
   return (
     <group>
+      {/* <Select enabled={}> */}
       <mesh
-        ref={pieceRef}
-        scale={scale}
-        position={position}
+        ref={piece.ref}
+        scale={new Vector3(0.25, 0.05, 0.25)}
+        position={
+          new Vector3(piece.position.x - 3.5, 0.15, piece.position.y - 3.5)
+        }
         castShadow
         receiveShadow
         geometry={nodes.piece.geometry}
+        onClick={(e) => {
+          console.log("PIECE CLICKED ", piece.id);
+          setSelected(piece);
+        }}
       >
-        <meshStandardMaterial color={color} metalness={0} roughness={0} />
+        <meshStandardMaterial color={piece.color} metalness={0} roughness={0} />
       </mesh>
+      {/* </Select> */}
     </group>
   );
 };

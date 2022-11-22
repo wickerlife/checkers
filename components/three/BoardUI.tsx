@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Euler, Vector3 } from "three";
 import { PieceUI } from "./PieceUI";
 
@@ -21,8 +21,9 @@ import {
   selectiveyellow,
   vividtangerine,
 } from "../../utils/colors";
-import { boardAtom, pieceAtomList } from "../../utils/atoms";
+import { boardAtom, pieceAtomList, selectedAtom } from "../../utils/atoms";
 import { useAtom, useAtomValue } from "jotai";
+import { EffectComposer, Outline } from "@react-three/postprocessing";
 
 /**
  * Stateful component
@@ -30,7 +31,7 @@ import { useAtom, useAtomValue } from "jotai";
  * @returns JSX.Element
  */
 export const BoardUI = () => {
-  const [board, setBoard] = useAtom(boardAtom);
+  const board = useAtomValue(boardAtom);
   const [pieceAtoms] = useAtom(pieceAtomList);
 
   return board ? (
@@ -117,18 +118,8 @@ export const BoardUI = () => {
       )}
 
       {/* Board pieces */}
-      {pieceAtoms.map((pieceAtom) => {
-        const piece = useAtomValue(pieceAtom);
-
-        return (
-          <PieceUI
-            scale={new Vector3(0.25, 0.1, 0.25)}
-            color={piece.color}
-            position={
-              new Vector3(piece.position.x - 3.5, 0.1, piece.position.y - 3.5)
-            }
-          />
-        );
+      {pieceAtoms.map((pieceAtom, index) => {
+        return <PieceUI pieceAtom={pieceAtom} key={index} />;
       })}
     </group>
   ) : null;

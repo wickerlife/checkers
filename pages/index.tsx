@@ -6,6 +6,7 @@ import {
   Bloom,
   DepthOfField,
   EffectComposer,
+  Outline,
   Vignette,
 } from "@react-three/postprocessing";
 
@@ -17,16 +18,16 @@ import { Light } from "../components/three/Light";
 import { Board as BoardModel } from "../models/Board";
 
 // State Toms
-import { boardAtom } from "../utils/atoms";
-import { useAtom } from "jotai";
+import { boardAtom, selectedAtom } from "../utils/atoms";
+import { useAtom, useAtomValue } from "jotai";
 
 export default function Home() {
   // Load initial state
   const [modal, showModal] = useState(false);
   const [board, setBoard] = useAtom(boardAtom);
+  const selected = useAtomValue(selectedAtom);
 
   // Update board state with mock game board layout
-
   useEffect(() => {
     const dsiplayBoard = BoardModel.randomBoard();
     setBoard(dsiplayBoard);
@@ -61,9 +62,18 @@ export default function Home() {
 
         {/* Visual effects: Glow and Vignette around the corners  */}
         <Suspense fallback={null}>
-          <EffectComposer resolutionScale={1}>
+          <EffectComposer
+            resolutionScale={1}
+            multisampling={8}
+            autoClear={false}
+          >
             <Bloom luminanceThreshold={0} luminanceSmoothing={2} height={400} />
-            <Vignette offset={0.5} darkness={0.6} eskil={true} />
+            <Vignette offset={0.5} darkness={0.6} eskil={false} />
+            <Outline
+              selection={selected ? selected.ref : []}
+              edgeStrength={10}
+              xRay={false}
+            />
           </EffectComposer>
         </Suspense>
       </Canvas>

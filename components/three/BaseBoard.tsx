@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
-import { Euler, Vector3 } from "three";
-import { PieceUI } from "./PieceUI";
+import React from "react";
+import { Euler } from "three";
+import { mistyrose, russianviolet, vividtangerine } from "../../utils/colors";
 
 const commonMaterialProps = {
   metalness: 0,
@@ -14,29 +14,10 @@ const edgeDefaultLength = 8;
 const edgeDefaultHeight = 0.2;
 const edgeDefaultWidth = 0.5;
 
-import { Board } from "../../models/Board";
-import {
-  mistyrose,
-  russianviolet,
-  selectiveyellow,
-  vividtangerine,
-} from "../../utils/colors";
-import { boardAtom, pieceAtomList, selectedAtom } from "../../utils/atoms";
-import { useAtom, useAtomValue } from "jotai";
-import { EffectComposer, Outline } from "@react-three/postprocessing";
-
-/**
- * Stateful component
- * @param param0
- * @returns JSX.Element
- */
-export const BoardUI = () => {
-  const board = useAtomValue(boardAtom);
-  const [pieceAtoms] = useAtom(pieceAtomList);
-
-  return board ? (
+export const BaseBoard = () => {
+  return (
     <group>
-      {/* Board sides */}
+      {/* Board sides and tiles */}
       {[0, 1, 2, 3].map((index) => {
         // Box Position
         let position = [] as any;
@@ -116,11 +97,6 @@ export const BoardUI = () => {
           );
         })
       )}
-
-      {/* Board pieces */}
-      {pieceAtoms.map((pieceAtom, index) => {
-        return <PieceUI pieceAtom={pieceAtom} key={index} />;
-      })}
     </group>
-  ) : null;
+  );
 };

@@ -1,5 +1,4 @@
-import React, { RefObject } from "react";
-import { useRef } from "react";
+import React from "react";
 import { Position } from "./Position";
 
 export class Piece {

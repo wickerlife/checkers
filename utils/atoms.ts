@@ -11,7 +11,7 @@ import { selectiveyellow } from "./colors";
 // Base State Atoms
 export const playersConnectedAtom = atom(false);
 export const playersAtom = atom<Array<Player>>([]);
-export const boardAtom = atom<Board>(Board.randomBoard());
+export const boardAtom = atom<Board>(Board.startBoard());
 export const turnAtom = atom<Player>(
   new Player("player", "Player1", selectiveyellow)
 );
@@ -20,7 +20,10 @@ export const turnAtom = atom<Player>(
 export const piecesAtom = atom((get) => get(boardAtom).pieces);
 export const pieceAtomList = splitAtom(piecesAtom);
 
-// Select piece atoms
+// Board Properties
 export const selectedAtom = focusAtom(boardAtom, (optic) =>
   optic.prop("selected")
+);
+export const enabledBoardAtom = focusAtom(boardAtom, (optic) =>
+  optic.prop("enabled")
 );

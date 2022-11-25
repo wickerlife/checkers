@@ -1,15 +1,20 @@
-import { useSetAtom } from "jotai";
-import { selectedAtom } from "../utils/atoms";
 import { nypink, russianviolet, selectiveyellow } from "../utils/colors";
 import { Piece } from "./Piece";
 import { Position } from "./Position";
 
+interface BoardInterface {
+  pieces: Array<Piece>;
+  enabled?: boolean;
+}
+
 export class Board {
   pieces: Array<Piece>;
   selected: Piece | null;
+  enabled: boolean;
 
-  constructor(pieces: Array<Piece>) {
+  constructor({ pieces, enabled = true }: BoardInterface) {
     this.pieces = pieces;
+    this.enabled = enabled;
     this.selected = null;
   }
 
@@ -53,7 +58,7 @@ export class Board {
   static startBoard(): Board {
     let pieceIndex = 0;
     // Loop through an 8x8 bidimensional array
-    let pieces = Array(24);
+    let pieces: Array<Piece> = Array(24);
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
         if (y < 3 && Position.isValidPosition(x, y)) {
@@ -69,11 +74,11 @@ export class Board {
         }
       }
     }
-    return new Board(pieces);
+    return new Board({ pieces });
   }
 
   /**
-   * Generates an random checkers board layout
+   * Generates a disabled random checkers board layout
    * @returns Board
    */
   static randomBoard(): Board {
@@ -120,6 +125,6 @@ export class Board {
       }
     }
 
-    return new Board(pieces);
+    return new Board({ pieces: pieces, enabled: false });
   }
 }

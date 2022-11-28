@@ -13,7 +13,7 @@ export const playersConnectedAtom = atom(false);
 export const playersAtom = atom<Array<Player>>([]);
 export const boardAtom = atom<Board>(Board.startBoard());
 export const turnAtom = atom<Player>(
-  new Player("player", "Player1", selectiveyellow)
+  new Player({ id: 1, username: "Player1", color: selectiveyellow })
 );
 
 // Pieces List atoms

@@ -1,10 +1,16 @@
+interface PlayerInterface {
+  id: number;
+  username: string;
+  color: string;
+}
+
 export class Player {
-  id: string;
+  id: number;
   username: string;
   color: string;
   wins: number;
 
-  constructor(id: string, username: string, color: string) {
+  constructor({ id, username, color }: PlayerInterface) {
     this.id = id;
     this.username = username;
     this.color = color;

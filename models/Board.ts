@@ -74,7 +74,7 @@ export class Board {
         }
       }
     }
-    return new Board({ pieces });
+    return new Board({ pieces, enabled: true });
   }
 
   /**

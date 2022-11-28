@@ -22,23 +22,24 @@ import { useRouter } from "next/router";
 import { useKeyPress } from "../hooks/hooks";
 import { GameMode } from "../components/ui/GameMode";
 import { GameBoard } from "../components/three/GameBoard";
+import { playersAtom } from "../utils/atoms";
+import { useSetAtom } from "jotai";
 
 export default function Home() {
   // Load initial state
   const [modal, showModal] = useState(false);
-  const [board, setBoard] = useState(Board.randomBoard());
-  // const [selected, setSelected] = useAtom(selectedAtom);
+  const [board] = useState(Board.randomBoard());
   const router = useRouter();
+  const setPlayers = useSetAtom(playersAtom);
 
   useKeyPress(() => {
-    //setSelected(null);
     showModal(true);
   }, "Enter");
   useKeyPress(() => showModal(false), "Escape");
 
   useEffect(() => {
-    router.prefetch("/welcome");
-    router.prefetch("/treasurehunt");
+    setPlayers([]);
+    router.prefetch("/game");
   });
 
   return board ? (
@@ -49,7 +50,7 @@ export default function Home() {
         shadows
         camera={{ position: [10, 20, 20], zoom: 25 }}
         gl={{ preserveDrawingBuffer: true }}
-        //onPointerMissed={() => setSelected(null)}
+        onPointerMissed={() => showModal(false)}
       >
         {/** Scene Lighting */}
         <Light></Light>
@@ -61,15 +62,12 @@ export default function Home() {
           <OrbitControls
             autoRotate={true}
             autoRotateSpeed={-0.7}
-            zoomSpeed={0.6}
-            minZoom={40}
-            maxZoom={140}
             dampingFactor={0.05}
             minPolarAngle={Math.PI / 3}
             maxPolarAngle={Math.PI / 3}
             enablePan={false}
             enableDamping={modal ? false : true}
-            enableZoom={modal ? false : true}
+            enableZoom={false}
             enableRotate={modal ? false : true}
           />
           {/* Visual effects: Glow and Vignette around the corners  */}
@@ -85,10 +83,6 @@ export default function Home() {
                 height={300}
               />
               <Vignette offset={0.5} darkness={0.6} eskil={false} />
-              {/* <Outline
-                edgeStrength={5}
-                xRay={false}
-              /> */}
 
               <DepthOfField
                 focusDistance={0}
@@ -118,9 +112,9 @@ export default function Home() {
       {/* Modal screen to allow choice of game mode: One-device or Multi-device */}
 
       <div
-        className={`fixed flex w-full inset-0 place-content-center gap-20 top-[50%]  mt-[-250px]  ${
+        className={`fixed flex w-full inset-0 place-content-center gap-4 min-[850px]:gap-20 top-[50%]  mt-[-250px] justify-center items-center ${
           modal ? "" : "invisible"
-        }`}
+        } max-[849px]:flex-col max-[849px]:`}
       >
         <GameMode
           subtitle="Multiplayer"

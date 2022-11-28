@@ -34,7 +34,11 @@ export const DumbPiece = ({ piece, onSelect }: PieceInterface) => {
         castShadow
         receiveShadow
         geometry={nodes.piece.geometry}
-        onClick={(e) => onSelect}
+        onClick={(e) => {
+          if (onSelect) {
+            onSelect();
+          }
+        }}
       >
         <meshStandardMaterial color={piece.color} metalness={0} roughness={0} />
       </mesh>

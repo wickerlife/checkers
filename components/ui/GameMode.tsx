@@ -17,17 +17,17 @@ export const GameMode = ({
 }: GameModeInterface) => {
   return (
     <div
-      className="bg-mistyrose w-[400px] h-[500px] hover:cursor-pointer rounded-[22px] flex flex-col place-content-center  justify-between items-center hover:scale-105 transition ease-in-out duration-100  px-[44px] pt-[44px] pb-[77px]"
+      className="bg-mistyrose hover:cursor-pointer rounded-[22px] hover:scale-105 transition ease-in-out duration-100 grid grid-cols-2 px-[22px] py-[22px] gap-3 max-w-[500px] md:grid-cols-1 md:max-w-[350px] lg:max-w-[400px] lg:p-[33px]"
       onClick={onClick}
     >
-      <div className="flex flex-col items-center">
-        <p className="text-[14px]">{subtitle}</p>
-        <h2 className="text-[24px] font-semibold text-russianviolet">
-          {heading}
-        </h2>
+      <div className="">
+        <p className="font-normal text-nypink text-[14px]">{subtitle}</p>
+        <h2 className="font-semibold text-[20px] lg:text-[24px]">{heading}</h2>
       </div>
-      <div className="h-[200px]">{children}</div>
-      <div className="text-center">{text}</div>
+      <div className="max-h-[150px] h-auto row-span-2 md:row-span-1 lg:h-[200px] lg:max-h-[200px]">
+        {children}
+      </div>
+      <div className="text-[14px]">{text}</div>
     </div>
   );
 };

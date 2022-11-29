@@ -43,118 +43,121 @@ export default function Home() {
   });
 
   return board ? (
-    <div className="fixed w-screen h-screen place-content-center">
-      <Canvas
-        dpr={1} // resolution
-        frameloop="demand"
-        shadows
-        camera={{ position: [10, 20, 20], zoom: 25 }}
-        gl={{ preserveDrawingBuffer: true }}
-        onPointerMissed={() => showModal(false)}
-      >
-        {/** Scene Lighting */}
-        <Light></Light>
-        <Selection>
-          {/* Checkers Board (pieces included) */}
-          {/* <DumbBoard board={board}></DumbBoard> */}
-          <DumbBoard board={board}></DumbBoard>
-          {/* Orbit controls allows the user to rotate the visual horizontally */}
-          <OrbitControls
-            autoRotate={true}
-            autoRotateSpeed={-0.7}
-            dampingFactor={0.05}
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI / 3}
-            enablePan={false}
-            enableDamping={modal ? false : true}
-            enableZoom={false}
-            enableRotate={modal ? false : true}
-          />
-          {/* Visual effects: Glow and Vignette around the corners  */}
-          <Suspense fallback={null}>
-            <EffectComposer
-              resolutionScale={1}
-              multisampling={8}
-              autoClear={false}
+    <>
+      <div className="fixed z-0 w-screen h-screen place-content-center">
+        <Canvas
+          dpr={1} // resolution
+          frameloop="demand"
+          shadows
+          camera={{ position: [10, 20, 20], zoom: 25 }}
+          gl={{ preserveDrawingBuffer: true }}
+          onPointerMissed={() => showModal(false)}
+        >
+          {/** Scene Lighting */}
+          <Light></Light>
+          <Selection>
+            {/* Checkers Board (pieces included) */}
+            {/* <DumbBoard board={board}></DumbBoard> */}
+            <DumbBoard board={board}></DumbBoard>
+            {/* Orbit controls allows the user to rotate the visual horizontally */}
+            <OrbitControls
+              autoRotate={true}
+              autoRotateSpeed={-0.7}
+              dampingFactor={0.05}
+              minPolarAngle={Math.PI / 3}
+              maxPolarAngle={Math.PI / 3}
+              enablePan={false}
+              enableDamping={modal ? false : true}
+              enableZoom={false}
+              enableRotate={modal ? false : true}
+            />
+            {/* Visual effects: Glow and Vignette around the corners  */}
+            <Suspense fallback={null}>
+              <EffectComposer
+                resolutionScale={1}
+                multisampling={8}
+                autoClear={false}
+              >
+                <Bloom
+                  luminanceThreshold={0}
+                  luminanceSmoothing={2}
+                  height={300}
+                />
+                <Vignette offset={0.5} darkness={0.6} eskil={false} />
+
+                <DepthOfField
+                  focusDistance={0}
+                  focalLength={0.02}
+                  bokehScale={modal ? 10 : 0}
+                ></DepthOfField>
+              </EffectComposer>
+            </Suspense>
+          </Selection>
+        </Canvas>
+      </div>
+
+      <div className="z-50 flex flex-col w-full h-[100vh] py-[88px] ">
+        {/* Modal screen to allow choice of game mode: One-device or Multi-device */}
+        <div
+          className={`flex flex-col h-full mx-[22px] z-50 place-content-center gap-11 justify-center items-center md:flex-row md:flex-1 ${
+            modal ? "visible" : "invisible"
+          }`}
+        >
+          <GameMode
+            subtitle="Multiplayer"
+            heading="Single Device"
+            text="Play against your opponent on the same device in turns"
+            onClick={() => {
+              router.push("/game");
+            }}
+          >
+            <Canvas
+              dpr={2} // resolution
+              frameloop="demand"
+              shadows
+              camera={{ position: [20, 20, 10], zoom: 4 }}
+              gl={{ preserveDrawingBuffer: true }}
             >
-              <Bloom
-                luminanceThreshold={0}
-                luminanceSmoothing={2}
-                height={300}
-              />
-              <Vignette offset={0.5} darkness={0.6} eskil={false} />
-
-              <DepthOfField
-                focusDistance={0}
-                focalLength={0.02}
-                bokehScale={modal ? 10 : 0}
-              ></DepthOfField>
-            </EffectComposer>
-          </Suspense>
-        </Selection>
-      </Canvas>
-
-      {/* Overlay message: Press enter to start playing */}
-      <div
-        className={`fixed flex w-full bottom-20 place-content-center ${
-          modal ? "invisible" : ""
-        }`}
-      >
-        <p className="text-gray-500 align-middle dark:text-gray-400">
-          Please press{" "}
-          <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
-            Enter
-          </kbd>{" "}
-          to start a new game...
-        </p>
-      </div>
-
-      {/* Modal screen to allow choice of game mode: One-device or Multi-device */}
-
-      <div
-        className={`fixed flex w-full inset-0 place-content-center gap-4 min-[850px]:gap-20 top-[50%]  mt-[-250px] justify-center items-center ${
-          modal ? "" : "invisible"
-        } max-[849px]:flex-col max-[849px]:`}
-      >
-        <GameMode
-          subtitle="Multiplayer"
-          heading="One-Device"
-          text="Play against your opponent on the same device in turns"
-          onClick={() => {
-            router.push("/game");
-          }}
-        >
-          <Canvas
-            dpr={2} // resolution
-            frameloop="demand"
-            shadows
-            camera={{ position: [20, 20, 10], zoom: 4 }}
-            gl={{ preserveDrawingBuffer: true }}
+              <Light></Light>
+              <DumbBoard board={Board.randomBoard()}></DumbBoard>
+            </Canvas>
+          </GameMode>
+          <GameMode
+            subtitle="Multiplayer"
+            heading="Multiple Devices"
+            text="Start a game and send the link to your opponent to play on different devices"
+            onClick={() => {
+              // Start Server connection
+            }}
           >
-            <Light></Light>
-            <DumbBoard board={Board.randomBoard()}></DumbBoard>
-          </Canvas>
-        </GameMode>
-        <GameMode
-          subtitle="Multiplayer"
-          heading="Multiple Devices"
-          text="Start a game and send the link to your opponent to play on different devices"
-          onClick={() => {
-            // Start Server connection
-          }}
+            <Canvas
+              dpr={2} // resolution
+              frameloop="demand"
+              shadows
+              camera={{ position: [20, 20, 10], zoom: 4 }}
+              gl={{ preserveDrawingBuffer: true }}
+            >
+              <Light></Light>
+              <DumbBoard board={Board.startBoard()}></DumbBoard>
+            </Canvas>
+          </GameMode>
+        </div>
+
+        {/* Overlay message: Press enter to start playing */}
+        <div
+          className={`flex w-full bottom-20 z-50 place-content-center ${
+            modal ? "invisible" : ""
+          }`}
         >
-          <Canvas
-            dpr={2} // resolution
-            frameloop="demand"
-            shadows
-            camera={{ position: [20, 20, 10], zoom: 4 }}
-            gl={{ preserveDrawingBuffer: true }}
-          >
-            <Light></Light>
-            <DumbBoard board={Board.startBoard()}></DumbBoard>
-          </Canvas>
-        </GameMode>
+          <p className="text-gray-500 align-middle dark:text-gray-400">
+            Please press{" "}
+            <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
+              Enter
+            </kbd>{" "}
+            to start a new game...
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   ) : null;
 }

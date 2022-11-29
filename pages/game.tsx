@@ -110,6 +110,7 @@ export default function Game() {
           inputHint="Name..."
           btnText="Next"
           backBtn={players.length > 0 ? true : false}
+          backBtnEnabled={playerName.length > 2}
           onSubmit={() => {
             addPlayer(playerName, players);
           }}

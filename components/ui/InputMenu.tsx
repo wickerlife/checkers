@@ -8,6 +8,7 @@ interface InputMenuInterface {
   inputHint: string;
   btnText: string;
   backBtn: boolean;
+  backBtnEnabled: boolean;
   onSubmit: any;
   onChange: any;
   onBack?: any;
@@ -19,15 +20,15 @@ export const InputMenu = ({
   inputHint,
   btnText,
   backBtn,
+  backBtnEnabled = false,
   onSubmit,
   onChange,
   onBack,
 }: InputMenuInterface) => {
   const [players, setPlayers] = useAtom(playersAtom);
-  const [btnEnabled, setEnabled] = useState(false);
 
   return (
-    <div className="flex gap-[33px]">
+    <div className="flex gap-[22px]">
       <span
         onClick={() => onBack()}
         className={` top-0 material-symbols-outlined text-russianviolet hover:cursor-pointer ${
@@ -46,7 +47,6 @@ export const InputMenu = ({
         <input
           onChange={(e) => {
             onChange(e);
-            setEnabled(e.target.value.length > 2 ? true : false);
           }}
           type="text"
           placeholder={inputHint}
@@ -54,9 +54,9 @@ export const InputMenu = ({
           value={value}
         />
         <button
-          disabled={!btnEnabled}
+          disabled={!backBtnEnabled}
           className={`h-[55px] ${
-            btnEnabled
+            backBtnEnabled
               ? "bg-russianviolet text-mistyrose"
               : "bg-fadedrose text-hint"
           } rounded-[11px] transition ease-in-out hover:scale-105 `}

@@ -20,10 +20,9 @@ import { Board } from "../models/Board";
 // State Toms
 import { useRouter } from "next/router";
 import { useKeyPress } from "../hooks/hooks";
-import { GameMode } from "../components/ui/GameMode";
-import { GameBoard } from "../components/three/GameBoard";
 import { playersAtom } from "../utils/atoms";
 import { useSetAtom } from "jotai";
+import { GameMode } from "../components/ui/GameMode";
 
 export default function Home() {
   // Load initial state
@@ -44,7 +43,7 @@ export default function Home() {
 
   return board ? (
     <>
-      <div className="fixed z-0 w-screen h-screen place-content-center">
+      <div className="fixed z-0 items-center justify-center w-screen h-screen align-middle place-content-center">
         <Canvas
           dpr={1} // resolution
           frameloop="demand"
@@ -145,8 +144,8 @@ export default function Home() {
 
         {/* Overlay message: Press enter to start playing */}
         <div
-          className={`flex w-full bottom-20 z-50 place-content-center ${
-            modal ? "invisible" : ""
+          className={`invisible flex bottom-20 z-50 place-content-center ${
+            modal ? "invisible h-0" : "sm:visible"
           }`}
         >
           <p className="text-gray-500 align-middle dark:text-gray-400">
@@ -156,6 +155,21 @@ export default function Home() {
             </kbd>{" "}
             to start a new game...
           </p>
+        </div>
+
+        {/* Start button for phones */}
+        <div
+          className={`z-50 flex w-full place-content-center bottom-20 sm:invisible ${
+            modal ? "invisible h-0" : "sm:visible"
+          }
+          `}
+        >
+          <button
+            className="max-w-[300px] text-white font-medium bg-selectiveyellow px-16 py-6 hover:scale-105 transition ease-in-out rounded-[16px]"
+            onClick={() => showModal(true)}
+          >
+            Start a new game
+          </button>
         </div>
       </div>
     </>

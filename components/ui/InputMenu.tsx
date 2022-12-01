@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { playersAtom } from "../../utils/atoms";
 
 interface InputMenuInterface {
+  visible?: boolean;
   value?: string;
   label: string;
   inputHint: string;
@@ -15,6 +16,7 @@ interface InputMenuInterface {
 }
 
 export const InputMenu = ({
+  visible = true,
   value = "",
   label,
   inputHint,
@@ -32,7 +34,7 @@ export const InputMenu = ({
       <span
         onClick={() => onBack()}
         className={` top-0 material-symbols-outlined text-russianviolet hover:cursor-pointer ${
-          backBtn ? "visible" : "invisible"
+          backBtn && visible ? "visible" : "invisible"
         }`}
       >
         arrow_back

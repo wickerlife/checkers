@@ -97,90 +97,100 @@ export default function Game() {
   }, []);
 
   return (
-    <div className="flex flex-col">
-      {/* Player name selection -- only visible when submiting player names */}
-      <div
-        className={`w-screen place-content-center ${
-          players.length != 2 ? "visible h-screen" : "invisible h-0"
-        } flex flex-col justify-center items-center`}
-      >
-        <InputMenu
-          value={playerName}
-          label={`${players.length > 0 ? "Second" : "First"} player's name`}
-          inputHint="Name..."
-          btnText="Next"
-          backBtn={players.length > 0 ? true : false}
-          backBtnEnabled={playerName.length > 2}
-          onSubmit={() => {
-            addPlayer(playerName, players);
-          }}
-          onChange={(e: any) => {
-            setPlayerName(e.target.value);
-          }}
-          onBack={() => {
-            removePlayer(players);
-          }}
-        ></InputMenu>
-
-        {/* Overlay message: Press enter to start playing */}
+    <div
+      className={`w-screen overflow-hidden  ${
+        players.length < 2 ? "" : "absolute top-[50%] translate-y-[-45%] "
+      }`}
+    >
+      <div className="flex flex-col overflow-hidden">
+        {/* Player name selection -- only visible when submiting player names */}
         <div
-          className={`relative flex top-[44px] place-content-center ${
-            playerName.length < 3 ? "invisible" : ""
+          className={`w-screen place-content-center ${
+            players.length != 2 ? "visible h-screen" : "invisible h-0"
+          } flex flex-col justify-center items-center`}
+        >
+          <InputMenu
+            visible={players.length < 2}
+            value={playerName}
+            label={`${players.length > 0 ? "Second" : "First"} player's name`}
+            inputHint="Name..."
+            btnText="Next"
+            backBtn={players.length > 0 ? true : false}
+            backBtnEnabled={playerName.length > 2}
+            onSubmit={() => {
+              addPlayer(playerName, players);
+            }}
+            onChange={(e: any) => {
+              setPlayerName(e.target.value);
+            }}
+            onBack={() => {
+              removePlayer(players);
+            }}
+          ></InputMenu>
+
+          {/* Overlay message: Press enter to start playing */}
+          <div
+            className={`relative flex top-[44px] place-content-center ${
+              playerName.length < 3 ? "invisible" : ""
+            }`}
+          >
+            <p className="text-gray-500 align-middle dark:text-gray-400">
+              Press{" "}
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
+                Enter
+              </kbd>{" "}
+              to continue...
+            </p>
+          </div>
+        </div>
+
+        {/* Game board section */}
+        <div
+          className={` max-h-[90vh] flex-1 overflow-hidden w-screen aspect-video ${
+            players.length == 2 ? "visible" : "invisible h-0 w-0"
           }`}
         >
-          <p className="text-gray-500 align-middle dark:text-gray-400">
-            Press{" "}
-            <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
-              Enter
-            </kbd>{" "}
-            to continue...
-          </p>
-        </div>
-      </div>
-      {/* Game board section */}
-      <div
-        className={`w-screen place-content-center ${
-          players.length == 2 ? "visible h-screen" : "invisible h-0"
-        }`}
-      >
-        <Canvas
-          dpr={1.8} // resolution
-          frameloop="demand"
-          shadows
-          camera={{ position: [0, 20, 20], zoom: 5 }}
-          gl={{ preserveDrawingBuffer: true }}
-          onPointerMissed={() => setSelected(null)}
-        >
-          <Light></Light>
-          {/* Orbit controls allows the user to rotate the visual horizontally */}
-          <OrbitControls
-            maxAzimuthAngle={Math.PI / 3}
-            minAzimuthAngle={-Math.PI / 3}
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI / 3}
-            enablePan={false}
-            enableZoom={false}
-            enableRotate={true}
-          />
-          <Selection>
-            <GameBoard></GameBoard>
+          <Canvas
+            dpr={1.8} // resolution
+            frameloop="demand"
+            shadows
+            camera={{ position: [0, 20, 20], zoom: 5 }}
+            gl={{ preserveDrawingBuffer: true }}
+            onPointerMissed={() => setSelected(null)}
+          >
+            <Light></Light>
+            {/* Orbit controls allows the user to rotate the visual horizontally */}
+            <OrbitControls
+              maxAzimuthAngle={Math.PI / 3}
+              minAzimuthAngle={-Math.PI / 3}
+              minPolarAngle={Math.PI / 4}
+              maxPolarAngle={Math.PI / 3}
+              minDistance={25}
+              maxDistance={40}
+              enablePan={false}
+              enableZoom={true}
+              enableRotate={true}
+            />
+            <Selection>
+              <GameBoard></GameBoard>
 
-            <Suspense fallback={null}>
-              <EffectComposer
-                resolutionScale={1}
-                multisampling={8}
-                autoClear={false}
-              >
-                <SelectiveBloom
-                  luminanceThreshold={0}
-                  luminanceSmoothing={2}
-                  height={300}
-                />
-                <Outline edgeStrength={5} xRay={false} />
-              </EffectComposer>
-            </Suspense>
-          </Selection>
-        </Canvas>
+              <Suspense fallback={null}>
+                <EffectComposer
+                  resolutionScale={1}
+                  multisampling={8}
+                  autoClear={false}
+                >
+                  <SelectiveBloom
+                    luminanceThreshold={0}
+                    luminanceSmoothing={2}
+                    height={300}
+                  />
+                  <Outline edgeStrength={5} xRay={false} />
+                </EffectComposer>
+              </Suspense>
+            </Selection>
+          </Canvas>
+        </div>
       </div>
     </div>
   );

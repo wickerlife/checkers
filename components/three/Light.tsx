@@ -1,8 +1,10 @@
 import React, { Ref, useRef } from "react";
 import { DirectionalLight, OrthographicCamera } from "three";
 
-export const Light = () => {
-  const light = useRef() as Ref<DirectionalLight>;
+interface LightInterface {
+  lightRef: Ref<DirectionalLight>;
+}
+export const Light = ({ lightRef }: LightInterface) => {
   const camera = useRef() as Ref<OrthographicCamera>;
   //useHelper(camera, CameraHelper);
   //useHelper(light, DirectionalLightHelper);
@@ -12,7 +14,7 @@ export const Light = () => {
       <pointLight position={[-10, 0, -20]} color="white" intensity={2.5} />
       <pointLight position={[0, -10, 0]} intensity={1.5} />
       <directionalLight
-        ref={light}
+        ref={lightRef}
         castShadow
         position={[10, 10, -10]}
         intensity={1.5}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Euler } from "three";
+import { Position } from "../../models/Position";
 import { mistyrose, russianviolet, vividtangerine } from "../../utils/colors";
 
 const commonMaterialProps = {

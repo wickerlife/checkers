@@ -8,34 +8,48 @@ import {
 } from "@react-three/postprocessing";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
-import { Suspense, useEffect, useState } from "react";
+import { Ref, Suspense, useEffect, useRef, useState } from "react";
 import React from "react-dom";
+import { DirectionalLight } from "three";
 import { GameBoard } from "../components/three/GameBoard";
 import { Light } from "../components/three/Light";
 import { InputMenu } from "../components/ui/InputMenu";
-import { useKeyPress } from "../hooks/hooks";
+import { useKeyPress, useCurrentSize, Size } from "../hooks/hooks";
+import { Board } from "../models/Board";
 import { Player } from "../models/Player";
-import { playersAtom, selectedAtom, turnAtom } from "../utils/atoms";
+import {
+  boardAtom,
+  playersAtom,
+  selectedAtom,
+  pathsAtom,
+  turnAtom,
+} from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
 export default function Game() {
-  console.log("RENDER");
   const router = useRouter();
+  const lightRef = useRef() as Ref<DirectionalLight>;
 
   // Local state
   const [playerName, setPlayerName] = useState("");
   const [pressedEnter, setPressedEnter] = useState(false);
   const [pressedEscape, setPressedEscape] = useState(false);
+  const size = useCurrentSize();
 
   // Global state
   const setSelected = useSetAtom(selectedAtom);
+  const setPaths = useSetAtom(pathsAtom);
   const [players, setPlayers] = useAtom(playersAtom);
+  const [board, setBoard] = useAtom(boardAtom);
   const [turn, setTurn] = useAtom(turnAtom);
 
-  // Three stuff
+  // Initialize correct board
+  useEffect(() => {
+    if (players.length > 1)
+      setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
+  }, [players]);
 
-  const addPlayer = (value: string, players: any) => {
-    console.log("Register player");
+  const addPlayer = (value: string, players: Array<Player>) => {
     let player = new Player({
       id: players.length > 0 ? 1 : 2,
       username: value,
@@ -44,10 +58,9 @@ export default function Game() {
     setPlayerName("");
 
     if (players.length > 0) {
-      setTurn(players[0]);
+      if (player.color == selectiveyellow) setTurn(player);
     }
     setPlayers([...players, player]);
-    console.log(players.length + 1);
   };
 
   const removePlayer = (players: any) => {
@@ -56,6 +69,22 @@ export default function Game() {
     let prev = temp.shift();
     setPlayers(temp);
     if (prev) setPlayerName(prev.username);
+  };
+
+  const getMinDistance = (size: Size) => {
+    let added = 0;
+    //let max = size.width * ;
+    //if (size.width / size.height > 1.5)
+    //return Math.pow((1 / size.width) * 10000, 2) + 500;
+    let c = 0;
+    let ratio = size.width / size.height;
+
+    if (size.width < 1024) return 25 / ratio + 4 / ratio;
+    else return 60 / ratio + c;
+  };
+
+  const getMaxDistance = (size: Size) => {
+    return getMinDistance(size);
   };
 
   // Listen to enter keypress
@@ -88,16 +117,16 @@ export default function Game() {
   useKeyPress(() => setPressedEscape(true), "Escape");
 
   //PREVENT PAGE REFRESH
-  useEffect(() => {
-    const unloadCallback = (event: any) => {
-      event.preventDefault();
-      event.returnValue = "";
-      return "";
-    };
+  // useEffect(() => {
+  //   const unloadCallback = (event: any) => {
+  //     event.preventDefault();
+  //     event.returnValue = "";
+  //     return "";
+  //   };
 
-    window.addEventListener("beforeunload", unloadCallback);
-    return () => window.removeEventListener("beforeunload", unloadCallback);
-  }, []);
+  //   window.addEventListener("beforeunload", unloadCallback);
+  //   return () => window.removeEventListener("beforeunload", unloadCallback);
+  // }, []);
 
   return (
     <>
@@ -151,7 +180,7 @@ export default function Game() {
       </div>
       {/* Game board section */}
       <div
-        className={`fixed h-screen flex-1 overflow-hidden w-screen z-40 ${
+        className={`fixed h-[70vh] lg:h-screen flex-1 overflow-hidden w-screen z-20 ${
           players.length == 2 ? "visible" : "invisible h-0 w-0"
         }`}
       >
@@ -161,17 +190,22 @@ export default function Game() {
           shadows
           camera={{ position: [0, 20, 20], zoom: 5 }}
           gl={{ preserveDrawingBuffer: true }}
-          onPointerMissed={() => setSelected(null)}
+          onPointerMissed={() => {
+            setSelected(null);
+            setPaths([]);
+          }}
         >
-          <Light></Light>
+          <Light lightRef={lightRef}></Light>
           {/* Orbit controls allows the user to rotate the visual horizontally */}
           <OrbitControls
             maxAzimuthAngle={Math.PI / 3}
             minAzimuthAngle={-Math.PI / 3}
             minPolarAngle={Math.PI / 4}
             maxPolarAngle={Math.PI / 3}
-            minDistance={25}
-            maxDistance={40}
+            minDistance={getMinDistance(size)}
+            maxDistance={getMaxDistance(size)}
+            // minDistance={50}
+            // maxDistance={50}
             enablePan={false}
             enableZoom={true}
             enableRotate={true}
@@ -186,6 +220,7 @@ export default function Game() {
                 autoClear={false}
               >
                 <SelectiveBloom
+                  lights={[lightRef]}
                   luminanceThreshold={0}
                   luminanceSmoothing={2}
                   height={300}
@@ -196,6 +231,10 @@ export default function Game() {
           </Selection>
         </Canvas>
       </div>
+      {/* <div className="fixed flex flex-col bottom-10 right-10">
+        <p>Ratio: {size.width / size.height}</p>
+        <p>Distance: {getMinDistance(size)}</p>
+      </div> */}
     </>
   );
 }

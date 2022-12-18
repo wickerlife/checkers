@@ -1,5 +1,5 @@
 import { useGLTF } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import React from "react";
 import { BufferGeometry, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -8,6 +8,7 @@ import { Piece } from "../../models/Piece";
 interface PieceInterface {
   piece: Piece;
   onSelect?: any;
+  trasparent?: boolean;
 }
 
 type GLTFResult = GLTF & {
@@ -17,11 +18,24 @@ type GLTFResult = GLTF & {
   materials: {};
 };
 
-export const DumbPiece = ({ piece, onSelect }: PieceInterface) => {
+export const DumbPiece = ({
+  piece,
+  onSelect,
+  trasparent = false,
+}: PieceInterface) => {
   const { nodes, materials } = useLoader(
     GLTFLoader,
     "/models/piece.glb"
   ) as GLTFResult;
+
+  useFrame(() => {
+    let vec = new Vector3(
+      piece.position.x - 3.5,
+      piece.position.z,
+      piece.position.y - 3.5
+    );
+    piece.ref.current.position.lerp(vec, 0.1);
+  });
 
   return (
     <group>
@@ -29,7 +43,11 @@ export const DumbPiece = ({ piece, onSelect }: PieceInterface) => {
         ref={piece.ref}
         scale={new Vector3(0.3, 0.05, 0.3)}
         position={
-          new Vector3(piece.position.x - 3.5, 0.15, piece.position.y - 3.5)
+          new Vector3(
+            piece.position.x - 3.5,
+            piece.position.z,
+            piece.position.y - 3.5
+          )
         }
         castShadow
         receiveShadow
@@ -40,7 +58,13 @@ export const DumbPiece = ({ piece, onSelect }: PieceInterface) => {
           }
         }}
       >
-        <meshStandardMaterial color={piece.color} metalness={0} roughness={0} />
+        <meshStandardMaterial
+          color={piece.color}
+          metalness={0}
+          roughness={0}
+          transparent={trasparent}
+          opacity={0.3}
+        />
       </mesh>
     </group>
   );

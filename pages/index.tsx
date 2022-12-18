@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Ref, Suspense, useEffect, useRef } from "react";
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
@@ -23,12 +23,16 @@ import { useKeyPress } from "../hooks/hooks";
 import { playersAtom } from "../utils/atoms";
 import { useSetAtom } from "jotai";
 import { GameMode } from "../components/ui/GameMode";
+import { Player } from "../models/Player";
+import { nypink, selectiveyellow } from "../utils/colors";
+import { DirectionalLight } from "three";
 
 export default function Home() {
+  const router = useRouter();
+  const lightRef = useRef() as Ref<DirectionalLight>;
   // Load initial state
   const [modal, showModal] = useState(false);
   const [board] = useState(Board.randomBoard());
-  const router = useRouter();
   const setPlayers = useSetAtom(playersAtom);
 
   useKeyPress(() => {
@@ -53,7 +57,7 @@ export default function Home() {
           onPointerMissed={() => showModal(false)}
         >
           {/** Scene Lighting */}
-          <Light></Light>
+          <Light lightRef={lightRef}></Light>
           <Selection>
             {/* Checkers Board (pieces included) */}
             {/* <DumbBoard board={board}></DumbBoard> */}
@@ -117,7 +121,7 @@ export default function Home() {
               camera={{ position: [20, 20, 10], zoom: 4 }}
               gl={{ preserveDrawingBuffer: true }}
             >
-              <Light></Light>
+              <Light lightRef={lightRef}></Light>
               <DumbBoard board={Board.randomBoard()}></DumbBoard>
             </Canvas>
           </GameMode>
@@ -136,8 +140,22 @@ export default function Home() {
               camera={{ position: [20, 20, 10], zoom: 4 }}
               gl={{ preserveDrawingBuffer: true }}
             >
-              <Light></Light>
-              <DumbBoard board={Board.startBoard()}></DumbBoard>
+              <Light lightRef={lightRef}></Light>
+              <DumbBoard
+                board={Board.startBoard([
+                  new Player({
+                    id: 1,
+                    username: "Player1",
+                    color: selectiveyellow,
+                  }),
+
+                  new Player({
+                    id: 2,
+                    username: "Player2",
+                    color: nypink,
+                  }),
+                ])}
+              ></DumbBoard>
             </Canvas>
           </GameMode>
         </div>

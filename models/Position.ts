@@ -55,4 +55,8 @@ export class Position {
     }
     return undefined;
   }
+
+  compare(npos: Position): boolean {
+    return npos.x == this.x && npos.y == this.y;
+  }
 }

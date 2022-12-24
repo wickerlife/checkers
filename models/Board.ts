@@ -1,4 +1,4 @@
-import { nypink, russianviolet, selectiveyellow } from "../utils/colors";
+import { nypink, selectiveyellow } from "../utils/colors";
 import { Path } from "./Path";
 import { Piece } from "./Piece";
 import { Player } from "./Player";
@@ -100,7 +100,7 @@ export class Board {
    * @returns Array<Path>
    */
   static possiblePaths(board: Board, piece: Piece): Array<Path> {
-    let possible = new Array<Position>();
+    let possible = new Array<Path>();
 
     let directions = [];
 
@@ -119,57 +119,100 @@ export class Board {
       );
     }
 
-    // Recursive search function
-    const search = (
-      position: Position,
-      directions: Array<Direction>,
-      steps: Array<Position> = []
-    ) => {
-      let paths = [] as Array<Path>;
+    interface searchInterface {
+      position: Position;
+      directions: Array<Direction>;
+      steps?: Array<Position>;
+      paths?: Array<Path>;
+      eaten?: number;
+    }
+
+    const search = ({
+      position,
+      directions,
+      steps = [],
+      paths = [],
+      eaten = 0,
+    }: searchInterface) => {
       steps.push(position);
 
       directions.forEach((direction) => {
+        let index = steps.length - 1;
         let newpos = position.getNeighbour(direction);
 
-        if (newpos != undefined) {
-          if (Board.hasPiece(board, newpos)) {
+        if (newpos == undefined) {
+          // Condition 5: at edge
+          if (steps.length > 1) {
+            let np = new Path({ steps: [...steps] });
+            if (!np.isincluded(paths)) paths.push(np);
+          }
+        } else {
+          // Conditions 2, 3 or 4 (has neighbour)
+          if (
+            Board.hasPiece(board, newpos) &&
+            Board.getPiece(board, newpos)?.player.id != piece.player.id
+          ) {
             let nextpos = newpos.getNeighbour(direction);
-            if (nextpos != undefined) {
-              if (Board.hasPiece(board, nextpos)) {
-                if (steps.length > 1) paths.push(new Path({ steps: steps }));
-                // stop
-              } else {
-                let tpaths = search(nextpos, directions, steps);
-                console.log("RECURSIVE PATHS: ", tpaths);
-                paths.push(...tpaths);
-                // recursion
-                //let paths = search(nextpos, directions, steps);
-                //tpaths.push(...paths);
+
+            if (nextpos == undefined) {
+              // Condition 4: Has neighbour at edge
+              if (steps.length > 1) {
+                let np = new Path({ steps: [...steps] });
+                if (!np.isincluded(paths)) paths.push(np);
               }
             } else {
-              if (!Board.hasPiece(board, newpos))
-                paths.push(new Path({ steps: [...steps, newpos] }));
+              if (
+                Board.hasPiece(board, nextpos) &&
+                Board.getPiece(board, nextpos)?.player.id != piece.player.id
+              ) {
+                // Condition 2: Has neighbour next to neighbour
+                let np = new Path({ steps: [...steps] });
+                if (!np.isincluded(paths)) paths.push(np);
+              } else {
+                // Condition 3: Has void next to neighbour (RECURSION POINT)
+                let newpaths = search({
+                  position: nextpos,
+                  directions: directions,
+                  steps: [...steps],
+                  paths: [...paths],
+                  eaten: eaten,
+                });
+                for (const npath of newpaths) {
+                  if (!npath.isincluded(paths)) {
+                    paths.push(npath);
+                  }
+                }
+              }
             }
           } else {
-            if (steps.at(0) == position)
-              paths.push(new Path({ steps: [...steps, newpos] }));
+            if (steps.length > 1) {
+              // Condition 1.b (has no neighbour and is following move)
+              if (steps.length > 1) {
+                let np = new Path({ steps: [...steps] });
+                if (!np.isincluded(paths)) paths.push(np);
+              }
+            } else {
+              // Condition 1.a (has no neighbour and is first move)
+              let np = new Path({ steps: [...steps, newpos] });
+              if (!np.isincluded(paths)) paths.push(np);
+            }
           }
         }
       });
-
       return paths;
     };
 
-    let paths = search(piece.position, directions).sort(
-      (a, b) => a.getEaten(board).length - b.getEaten(board).length
-    );
-    console.log("UNFILTERED PATHS ", paths);
+    let paths = search({
+      position: piece.position,
+      directions: directions,
+    }).sort((a, b) => b.getEaten(board).length - a.getEaten(board).length);
 
     let filtered = paths.filter(
       (path, index) =>
         path.getEaten(board).length == paths[0].getEaten(board).length &&
         path.getSteps() > 1
     );
+
     return filtered;
   }
 

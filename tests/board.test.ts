@@ -29,6 +29,26 @@ test("Compare Position", () => {
   expect(p1.compare(p3)).toBe(false);
 });
 
+test("Has Piece", () => {
+  let piece1 = new Piece({
+    id: 1,
+    player: player1,
+    position: p2,
+  });
+  let piece2 = new Piece({
+    id: 2,
+    player: player2,
+    position: p5,
+  });
+  let board = new Board({
+    pieces: [piece1, piece2],
+  });
+
+  expect(Board.hasPiece(board, p2)).toBe(true);
+  expect(Board.hasPiece(board, p5)).toBe(true);
+  expect(Board.hasPiece(board, p1)).toBe(false);
+});
+
 test("Compare Path", () => {
   expect(path1.compare(path2)).toBe(false);
   expect(path2.compare(path1)).toBe(false);

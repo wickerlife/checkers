@@ -20,9 +20,13 @@ export const moveAtom = atom<Move | undefined>(undefined);
 // Pieces List atoms
 export const piecesAtom = atom(
   (get) => get(boardAtom).pieces,
-  (get, set, pieces: Piece[]) => {
+  (get, set, pieces: Array<Piece | undefined>) => {
     let board = get(boardAtom);
-    board.pieces = pieces;
+    let cleaned = [] as Array<Piece>;
+    pieces.forEach((piece) => {
+      if (piece != undefined) cleaned.push(piece);
+    });
+    board.pieces = cleaned;
     set(boardAtom, board);
     // you can set as many atoms as you want at the same time
   }

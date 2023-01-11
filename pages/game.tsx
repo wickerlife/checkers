@@ -23,6 +23,7 @@ import {
   selectedAtom,
   pathsAtom,
   turnAtom,
+  moveAtom,
 } from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
@@ -42,6 +43,7 @@ export default function Game() {
   const [players, setPlayers] = useAtom(playersAtom);
   const [board, setBoard] = useAtom(boardAtom);
   const [turn, setTurn] = useAtom(turnAtom);
+  const setMove = useSetAtom(moveAtom);
 
   // Initialize correct board
   useEffect(() => {
@@ -50,6 +52,7 @@ export default function Game() {
   }, [players]);
 
   const addPlayer = (value: string, players: Array<Player>) => {
+    console.log("ADD PLAYER");
     let player = new Player({
       id: players.length > 0 ? 1 : 2,
       username: value,
@@ -60,6 +63,7 @@ export default function Game() {
     if (players.length > 0) {
       if (player.color == selectiveyellow) setTurn(player);
     }
+    console.log("Player list: ", players);
     setPlayers([...players, player]);
   };
 
@@ -193,6 +197,7 @@ export default function Game() {
           onPointerMissed={() => {
             setSelected(null);
             setPaths([]);
+            setMove(undefined);
           }}
         >
           <Light lightRef={lightRef}></Light>

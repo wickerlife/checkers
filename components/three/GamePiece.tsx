@@ -16,7 +16,7 @@ import {
 import { DumbPiece } from "./DumbPiece";
 
 interface PieceInterface {
-  pieceAtom: PrimitiveAtom<Piece>;
+  pieceAtom: PrimitiveAtom<Piece | undefined>;
 }
 
 /**
@@ -53,32 +53,41 @@ export const GamePiece = ({ pieceAtom }: PieceInterface) => {
   //   }
   // });
 
-  useEffect(() => {
-    if (move == undefined || move.piece.id != piece.id) return;
+  // useEffect(() => {
+  //   if (move == undefined || piece == undefined) return;
 
-    console.log("DETECTED MOVE");
-    // TODO Process move
-    let temp = new Piece({
-      id: move.piece.id,
-      player: move.player,
-      position: move.position,
-    });
-    setPiece(temp);
-    console.log("MOVED PIECE");
-    // Remove processed move from queue
-    setMove(undefined);
-    console.log("CLEARED MOVE QUEUE");
-  }, [move, piece]);
+  //   // TODO Process move
+  //   // Piece was moved
+  //   if (move.piece.id == piece.id) {
+  //     let temp = new Piece({
+  //       id: move.piece.id,
+  //       player: move.player,
+  //       position: move.position,
+  //     });
+  //     setPiece(temp);
+  //   } else if () {
+  //     let eaten = move.path.getEaten(board);
+  //     let eatenIds = eaten.map((piece) => piece.id);
+  //     if (eatenIds.includes(piece.id)) {
+  //       setPiece(undefined);
+  //     }
+  //   }
+
+  //   // Remove piece if it was eaten
+
+  //   // Remove processed move from queue
+  //   setMove(undefined);
+  // }, [move, piece]);
 
   return (
     <group>
-      <Select enabled={selected?.id == piece.id}>
+      <Select enabled={selected?.id == piece!.id}>
         <DumbPiece
-          piece={piece}
+          piece={piece!}
           onSelect={() => {
             if (enabled) {
-              setSelected(piece);
-              setPaths(Board.possiblePaths(board, piece));
+              setSelected(piece!);
+              setPaths(Board.possiblePaths(board, piece!));
             }
           }}
         ></DumbPiece>

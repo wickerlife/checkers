@@ -27,6 +27,21 @@ export class Position {
     return false;
   }
 
+  /**
+   * Checks whether the given Position has reached the opposite player's side
+   * @returns boolean
+   */
+  static isEnemySide(position: Position, playerId: number) {
+    if (position.y == 0 && playerId == 1) {
+      return true;
+    }
+
+    if (position.y == 7 && playerId == 2) {
+      return true;
+    }
+    return false;
+  }
+
   getNeighbour(direction: Direction): Position | undefined {
     switch (direction) {
       case Direction.TopLeft:

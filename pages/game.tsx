@@ -6,7 +6,7 @@ import {
   SelectiveBloom,
   Selection,
 } from "@react-three/postprocessing";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
 import { Ref, Suspense, useEffect, useRef, useState } from "react";
 import React from "react-dom";
@@ -24,6 +24,7 @@ import {
   pathsAtom,
   turnAtom,
   moveAtom,
+  turnChangeAtom,
 } from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
@@ -43,7 +44,46 @@ export default function Game() {
   const [players, setPlayers] = useAtom(playersAtom);
   const setBoard = useSetAtom(boardAtom);
   const setTurn = useSetAtom(turnAtom);
+  const turnChange = useAtomValue(turnChangeAtom);
   const setMove = useSetAtom(moveAtom);
+
+  const addPlayer = (value: string, players: Array<Player>) => {
+    let player = new Player({
+      id: players.length > 0 ? 1 : 2,
+      username: value,
+      color: players.length > 0 ? selectiveyellow : nypink,
+    });
+    setPlayerName("");
+
+    if (players.length > 0) {
+      if (player.color == selectiveyellow) setTurn(player);
+    }
+    setPlayers([...players, player]);
+  };
+
+  const removePlayer = (players: any) => {
+    console.log("remove player");
+    let temp = players;
+    let prev = temp.shift();
+    setPlayers(temp);
+    if (prev) setPlayerName(prev.username);
+  };
+
+  const getMinDistance = (size: Size) => {
+    let added = 0;
+    //let max = size.width * ;
+    //if (size.width / size.height > 1.5)
+    //return Math.pow((1 / size.width) * 10000, 2) + 500;
+    let c = 0;
+    let ratio = size.width / size.height;
+
+    if (size.width < 1024) return 25 / ratio + 4 / ratio;
+    else return 60 / ratio + c;
+  };
+
+  const getMaxDistance = (size: Size) => {
+    return getMinDistance(size);
+  };
 
   // Initialize correct board
   useEffect(() => {
@@ -89,43 +129,13 @@ export default function Game() {
     }
   }, [players]);
 
-  const addPlayer = (value: string, players: Array<Player>) => {
-    let player = new Player({
-      id: players.length > 0 ? 1 : 2,
-      username: value,
-      color: players.length > 0 ? selectiveyellow : nypink,
-    });
-    setPlayerName("");
-
-    if (players.length > 0) {
-      if (player.color == selectiveyellow) setTurn(player);
+  // Handle Turn Change
+  useEffect(() => {
+    if (turnChange != undefined) {
+      let newturn = players.filter((player) => player.id != turnChange.id)[0];
+      setTurn(newturn);
     }
-    setPlayers([...players, player]);
-  };
-
-  const removePlayer = (players: any) => {
-    console.log("remove player");
-    let temp = players;
-    let prev = temp.shift();
-    setPlayers(temp);
-    if (prev) setPlayerName(prev.username);
-  };
-
-  const getMinDistance = (size: Size) => {
-    let added = 0;
-    //let max = size.width * ;
-    //if (size.width / size.height > 1.5)
-    //return Math.pow((1 / size.width) * 10000, 2) + 500;
-    let c = 0;
-    let ratio = size.width / size.height;
-
-    if (size.width < 1024) return 25 / ratio + 4 / ratio;
-    else return 60 / ratio + c;
-  };
-
-  const getMaxDistance = (size: Size) => {
-    return getMinDistance(size);
-  };
+  }, [turnChange, players]);
 
   // Listen to enter keypress
   useEffect(() => {

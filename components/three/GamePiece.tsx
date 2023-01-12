@@ -12,6 +12,7 @@ import {
   moveAtom,
   selectedAtom,
   pathsAtom,
+  turnAtom,
 } from "../../utils/atoms";
 import { DumbPiece } from "./DumbPiece";
 
@@ -27,6 +28,7 @@ interface PieceInterface {
 export const GamePiece = ({ pieceAtom }: PieceInterface) => {
   const [piece, setPiece] = useAtom(pieceAtom);
   const enabled = useAtomValue(enabledBoardAtom);
+  const turn = useAtomValue(turnAtom);
   const board = useAtomValue(boardAtom);
   // Process Piece Click
   const [selected, setSelected] = useAtom(selectedAtom);
@@ -85,7 +87,7 @@ export const GamePiece = ({ pieceAtom }: PieceInterface) => {
         <DumbPiece
           piece={piece!}
           onSelect={() => {
-            if (enabled) {
+            if (enabled && turn.id == piece?.player.id) {
               setSelected(piece!);
               setPaths(Board.possiblePaths(board, piece!));
             }

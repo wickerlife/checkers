@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   boardAtom,
   moveAtom,
@@ -8,6 +8,7 @@ import {
   pathsAtom,
   turnAtom,
   piecesAtom,
+  turnChangeAtom,
 } from "../../utils/atoms";
 import { GamePiece } from "./GamePiece";
 import { BaseBoard } from "./BaseBoard";
@@ -27,6 +28,7 @@ export const GameBoard = () => {
   const [selected, setSelected] = useAtom(selectedAtom);
   const [paths, setPaths] = useAtom(pathsAtom);
   const [move, setMove] = useAtom(moveAtom);
+  const setTurnChange = useSetAtom(turnChangeAtom);
 
   useEffect(() => {
     // MOVES HAPPEN HERE!
@@ -47,6 +49,7 @@ export const GameBoard = () => {
       filtered.push(temp);
       setPieces(filtered);
       setMove(undefined);
+      setTurnChange(move.player);
     }
   }, [move, pieces]);
 

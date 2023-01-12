@@ -12,6 +12,7 @@ import { Move } from "../models/Move";
 export const playersConnectedAtom = atom(false);
 export const playersAtom = atom<Array<Player>>([]);
 export const boardAtom = atom<Board>(Board.randomBoard());
+export const turnChangeAtom = atom<Player | undefined>(undefined);
 export const turnAtom = atom<Player>(
   new Player({ id: 1, username: "Player1", color: selectiveyellow })
 );

@@ -127,6 +127,13 @@ export class Board {
       eaten?: number;
     }
 
+    /**
+     * Recursive function
+     * Returns all possible paths a piece can take
+     *
+     * @param param0
+     * @returns
+     */
     const search = ({
       position,
       directions,
@@ -147,11 +154,11 @@ export class Board {
             if (!np.isincluded(paths)) paths.push(np);
           }
         } else {
-          // Conditions 2, 3 or 4 (has neighbour)
-          if (
-            Board.hasPiece(board, newpos) &&
-            Board.getPiece(board, newpos)?.player.id != piece.player.id
-          ) {
+          // Conditions 2, 3 or 4 (has enemy neighbour)
+          let haspiece = Board.hasPiece(board, newpos);
+          let isfriend =
+            Board.getPiece(board, newpos)?.player.id == piece.player.id;
+          if (haspiece && !isfriend) {
             let nextpos = newpos.getNeighbour(direction);
 
             if (nextpos == undefined) {
@@ -161,18 +168,22 @@ export class Board {
                 if (!np.isincluded(paths)) paths.push(np);
               }
             } else {
-              if (
-                Board.hasPiece(board, nextpos) &&
-                Board.getPiece(board, nextpos)?.player.id != piece.player.id
-              ) {
+              if (Board.hasPiece(board, nextpos)) {
                 // Condition 2: Has neighbour next to neighbour
                 let np = new Path({ steps: [...steps] });
                 if (!np.isincluded(paths)) paths.push(np);
               } else {
                 // Condition 3: Has void next to neighbour (RECURSION POINT)
+                /**
+                 * Remove incoming direction from list
+                 * Otherwise if the piece is a Dama, the loop will be endless
+                 */
+                let filteredDirections = directions.filter(
+                  (dir) => Position.getOppositeDirection(dir) != direction
+                );
                 let newpaths = search({
                   position: nextpos,
-                  directions: directions,
+                  directions: filteredDirections,
                   steps: [...steps],
                   paths: [...paths],
                   eaten: eaten,
@@ -185,16 +196,20 @@ export class Board {
               }
             }
           } else {
-            if (steps.length > 1) {
-              // Condition 1.b (has no neighbour and is following move)
+            // Has no neighbour or neighbour is friend
+            if (Board.getPiece(board, newpos)?.player.id != piece.player.id) {
+              // Has no neighbour
               if (steps.length > 1) {
-                let np = new Path({ steps: [...steps] });
+                // Condition 1.b (has no neighbour and is following move)
+                if (steps.length > 1) {
+                  let np = new Path({ steps: [...steps] });
+                  if (!np.isincluded(paths)) paths.push(np);
+                }
+              } else {
+                // Condition 1.a (has no neighbour and is first move)
+                let np = new Path({ steps: [...steps, newpos] });
                 if (!np.isincluded(paths)) paths.push(np);
               }
-            } else {
-              // Condition 1.a (has no neighbour and is first move)
-              let np = new Path({ steps: [...steps, newpos] });
-              if (!np.isincluded(paths)) paths.push(np);
             }
           }
         }

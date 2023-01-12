@@ -1,7 +1,6 @@
-import { useGLTF } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
 import React from "react";
-import { BufferGeometry, Vector3 } from "three";
+import { Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Piece } from "../../models/Piece";
 
@@ -11,7 +10,7 @@ interface PieceInterface {
   trasparent?: boolean;
 }
 
-type GLTFResult = GLTF & {
+type GTLFResults = GLTF & {
   nodes: {
     piece: THREE.Mesh;
   };
@@ -26,7 +25,7 @@ export const DumbPiece = ({
   const { nodes, materials } = useLoader(
     GLTFLoader,
     "/models/piece.glb"
-  ) as GLTFResult;
+  ) as GTLFResults;
 
   useFrame(() => {
     let vec = new Vector3(
@@ -59,7 +58,7 @@ export const DumbPiece = ({
         }}
       >
         <meshStandardMaterial
-          color={piece.color}
+          color={piece.isdama ? piece.getDamaColor() : piece.color}
           metalness={0}
           roughness={0}
           transparent={trasparent}

@@ -42,6 +42,23 @@ export class Position {
     return false;
   }
 
+  /**
+   * Retuns the opposite Direction from the argument
+   * @returns Direction
+   */
+  static getOppositeDirection(direction: Direction) {
+    switch (direction) {
+      case Direction.TopLeft:
+        return Direction.BottomRight;
+      case Direction.TopRight:
+        return Direction.BottomLeft;
+      case Direction.BottomRight:
+        return Direction.TopLeft;
+      case Direction.BottomLeft:
+        return Direction.TopRight;
+    }
+  }
+
   getNeighbour(direction: Direction): Position | undefined {
     switch (direction) {
       case Direction.TopLeft:

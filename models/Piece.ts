@@ -1,5 +1,5 @@
-import { ThreeElements } from "@react-three/fiber";
-import React, { Ref } from "react";
+import React from "react";
+import { damanypink, orange, selectiveyellow } from "../utils/colors";
 import { Player } from "./Player";
 import { Position } from "./Position";
 
@@ -27,7 +27,11 @@ export class Piece {
     this.ref = React.createRef();
   }
 
-  move() {}
-
-  upgradeToDama() {}
+  getDamaColor() {
+    if (this.color == selectiveyellow) {
+      return orange;
+    } else {
+      return damanypink;
+    }
+  }
 }

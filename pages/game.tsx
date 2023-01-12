@@ -1,12 +1,12 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import {
   EffectComposer,
   Outline,
   SelectiveBloom,
   Selection,
 } from "@react-three/postprocessing";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
 import { Ref, Suspense, useEffect, useRef, useState } from "react";
 import React from "react-dom";
@@ -41,18 +41,55 @@ export default function Game() {
   const setSelected = useSetAtom(selectedAtom);
   const setPaths = useSetAtom(pathsAtom);
   const [players, setPlayers] = useAtom(playersAtom);
-  const [board, setBoard] = useAtom(boardAtom);
-  const [turn, setTurn] = useAtom(turnAtom);
+  const setBoard = useSetAtom(boardAtom);
+  const setTurn = useSetAtom(turnAtom);
   const setMove = useSetAtom(moveAtom);
 
   // Initialize correct board
   useEffect(() => {
-    if (players.length > 1)
+    if (players.length > 1) {
       setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
+
+      // TODO Remove. this is just test code ->
+      // let splayers = players.sort((a, b) => a.id - b.id);
+      // let dama = new Piece({
+      //   id: 1,
+      //   player: splayers[0],
+      //   position: new Position(5, 2),
+      //   isdama: true,
+      // });
+
+      // let piece1 = new Piece({
+      //   id: 2,
+      //   player: splayers[1],
+      //   position: new Position(6, 1),
+      // });
+
+      // let piece2 = new Piece({
+      //   id: 3,
+      //   player: splayers[1],
+      //   position: new Position(6, 3),
+      //   isdama: true,
+      // });
+
+      // let piece3 = new Piece({
+      //   id: 4,
+      //   player: splayers[1],
+      //   position: new Position(4, 3),
+      // });
+
+      // let piece4 = new Piece({
+      //   id: 4,
+      //   player: splayers[1],
+      //   position: new Position(7, 4),
+      // });
+
+      // let board = new Board({ pieces: [dama, piece1, piece2, piece3, piece4] });
+      // setBoard(board);
+    }
   }, [players]);
 
   const addPlayer = (value: string, players: Array<Player>) => {
-    console.log("ADD PLAYER");
     let player = new Player({
       id: players.length > 0 ? 1 : 2,
       username: value,
@@ -63,7 +100,6 @@ export default function Game() {
     if (players.length > 0) {
       if (player.color == selectiveyellow) setTurn(player);
     }
-    console.log("Player list: ", players);
     setPlayers([...players, player]);
   };
 

@@ -209,15 +209,13 @@ export default function Game() {
           <OrbitControls
             maxAzimuthAngle={Math.PI / 3}
             minAzimuthAngle={-Math.PI / 3}
-            minPolarAngle={Math.PI / 4}
-            maxPolarAngle={Math.PI / 3}
+            minPolarAngle={size.width < 650 ? Math.PI / 9 : Math.PI / 4}
+            maxPolarAngle={size.width < 650 ? Math.PI / 9 : Math.PI / 3}
             minDistance={getMinDistance(size)}
             maxDistance={getMaxDistance(size)}
-            // minDistance={50}
-            // maxDistance={50}
             enablePan={false}
-            enableZoom={true}
-            enableRotate={true}
+            enableZoom={false}
+            enableRotate={size.width < 650 ? false : true}
           />
           <Selection>
             <GameBoard></GameBoard>

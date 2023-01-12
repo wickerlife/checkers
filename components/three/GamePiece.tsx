@@ -1,11 +1,8 @@
-import { useFrame } from "@react-three/fiber";
 import { Select } from "@react-three/postprocessing";
-import { Atom, PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, { useEffect, useState } from "react";
-import { Vector3 } from "three";
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import React, { useState } from "react";
 import { Board } from "../../models/Board";
 import { Piece } from "../../models/Piece";
-import { Position } from "../../models/Position";
 import {
   boardAtom,
   enabledBoardAtom,
@@ -86,6 +83,7 @@ export const GamePiece = ({ pieceAtom }: PieceInterface) => {
       <Select enabled={selected?.id == piece!.id}>
         <DumbPiece
           piece={piece!}
+          enabled={turn.id == piece?.player.id}
           onSelect={() => {
             if (enabled && turn.id == piece?.player.id) {
               setSelected(piece!);

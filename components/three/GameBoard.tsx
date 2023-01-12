@@ -90,6 +90,7 @@ export const GameBoard = () => {
             }`}
             trasparent={true}
             piece={tpiece}
+            enabled={true}
             onSelect={() => {
               setMove(
                 new Move({

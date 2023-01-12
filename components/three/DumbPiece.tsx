@@ -1,11 +1,13 @@
+import { useCursor } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
-import React from "react";
+import React, { useState } from "react";
 import { Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Piece } from "../../models/Piece";
 
 interface PieceInterface {
   piece: Piece;
+  enabled?: boolean;
   onSelect?: any;
   trasparent?: boolean;
 }
@@ -19,6 +21,7 @@ type GTLFResults = GLTF & {
 
 export const DumbPiece = ({
   piece,
+  enabled = false,
   onSelect,
   trasparent = false,
 }: PieceInterface) => {
@@ -26,6 +29,8 @@ export const DumbPiece = ({
     GLTFLoader,
     "/models/piece.glb"
   ) as GTLFResults;
+  const [hovered, setHovered] = useState(false);
+  useCursor(hovered);
 
   useFrame(() => {
     let vec = new Vector3(
@@ -49,10 +54,16 @@ export const DumbPiece = ({
           )
         }
         castShadow
+        onPointerOver={() => {
+          if (enabled) setHovered(true);
+        }}
+        onPointerOut={() => {
+          setHovered(false);
+        }}
         receiveShadow
         geometry={nodes.piece.geometry}
         onClick={(e) => {
-          if (onSelect) {
+          if (onSelect && enabled) {
             onSelect();
           }
         }}

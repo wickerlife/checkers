@@ -70,15 +70,10 @@ export default function Game() {
   };
 
   const getMinDistance = (size: Size) => {
-    let added = 0;
-    //let max = size.width * ;
-    //if (size.width / size.height > 1.5)
-    //return Math.pow((1 / size.width) * 10000, 2) + 500;
-    let c = 0;
     let ratio = size.width / size.height;
 
-    if (size.width < 1024) return 25 / ratio + 4 / ratio;
-    else return 60 / ratio + c;
+    if (size.width < 850) return 35 / ratio;
+    else return 60 / ratio;
   };
 
   const getMaxDistance = (size: Size) => {
@@ -89,43 +84,6 @@ export default function Game() {
   useEffect(() => {
     if (players.length > 1) {
       setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
-
-      // TODO Remove. this is just test code ->
-      // let splayers = players.sort((a, b) => a.id - b.id);
-      // let dama = new Piece({
-      //   id: 1,
-      //   player: splayers[0],
-      //   position: new Position(5, 2),
-      //   isdama: true,
-      // });
-
-      // let piece1 = new Piece({
-      //   id: 2,
-      //   player: splayers[1],
-      //   position: new Position(6, 1),
-      // });
-
-      // let piece2 = new Piece({
-      //   id: 3,
-      //   player: splayers[1],
-      //   position: new Position(6, 3),
-      //   isdama: true,
-      // });
-
-      // let piece3 = new Piece({
-      //   id: 4,
-      //   player: splayers[1],
-      //   position: new Position(4, 3),
-      // });
-
-      // let piece4 = new Piece({
-      //   id: 4,
-      //   player: splayers[1],
-      //   position: new Position(7, 4),
-      // });
-
-      // let board = new Board({ pieces: [dama, piece1, piece2, piece3, piece4] });
-      // setBoard(board);
     }
   }, [players]);
 
@@ -167,16 +125,16 @@ export default function Game() {
   useKeyPress(() => setPressedEscape(true), "Escape");
 
   //PREVENT PAGE REFRESH
-  // useEffect(() => {
-  //   const unloadCallback = (event: any) => {
-  //     event.preventDefault();
-  //     event.returnValue = "";
-  //     return "";
-  //   };
+  useEffect(() => {
+    const unloadCallback = (event: any) => {
+      event.preventDefault();
+      event.returnValue = "";
+      return "";
+    };
 
-  //   window.addEventListener("beforeunload", unloadCallback);
-  //   return () => window.removeEventListener("beforeunload", unloadCallback);
-  // }, []);
+    window.addEventListener("beforeunload", unloadCallback);
+    return () => window.removeEventListener("beforeunload", unloadCallback);
+  }, []);
 
   return (
     <>
@@ -230,7 +188,7 @@ export default function Game() {
       </div>
       {/* Game board section */}
       <div
-        className={`fixed h-[70vh] lg:h-screen flex-1 overflow-hidden w-screen z-20 ${
+        className={`fixed h-screen flex-1 overflow-hidden w-screen z-20 ${
           players.length == 2 ? "visible" : "invisible h-0 w-0"
         }`}
       >

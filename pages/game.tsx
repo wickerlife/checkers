@@ -31,6 +31,7 @@ import {
   gameStateAtom,
   GameState,
   mandatoryPathsAtom,
+  boardEnabledAtom,
 } from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
@@ -51,8 +52,9 @@ export default function Game() {
   const [mandatoryPaths, setMandatoryPaths] = useAtom(mandatoryPathsAtom);
   const [players, setPlayers] = useAtom(playersAtom);
   const [board, setBoard] = useAtom(boardAtom);
+  const setBoardEnabled = useSetAtom(boardEnabledAtom);
   const [turn, setTurn] = useAtom(turnAtom);
-  const turnChange = useAtomValue(turnChangeAtom);
+  const [turnChange, setTurnChange] = useAtom(turnChangeAtom);
   const setMove = useSetAtom(moveAtom);
 
   const addPlayer = (value: string, players: Array<Player>) => {
@@ -93,32 +95,45 @@ export default function Game() {
   // Initialize correct board
   useEffect(() => {
     if (players.length > 1) {
-      setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
-      // setBoard(
-      //   new Board({
-      //     pieces: [
-      //       new Piece({
-      //         id: 2,
-      //         player: players[0],
-      //         position: new Position(3, 4),
-      //       }),
-      //       new Piece({
-      //         id: 1,
-      //         player: players[1],
-      //         position: new Position(5, 6),
-      //       }),
-      //     ],
-      //   })
-      // );
+      //setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
+      setBoard(
+        new Board({
+          pieces: [
+            new Piece({
+              id: 1,
+              player: players[1],
+              position: new Position(3, 4),
+            }),
+            new Piece({
+              id: 2,
+              player: players[0],
+              position: new Position(5, 6),
+            }),
+          ],
+        })
+      );
     }
   }, [players]);
+
+  // Handle Game State Change
+  useEffect(() => {
+    if (gameState == GameState.GameEnded) {
+      console.log("Game ended");
+      setPaths([]);
+      setMandatoryPaths([]);
+      setMove(undefined);
+      setSelected(null);
+      setTurnChange(undefined);
+      setBoardEnabled(false);
+    }
+  }, [gameState]);
 
   // HANDLE TURN CHANGE
   useEffect(() => {
     if (turnChange != undefined) {
       let newturn = players.filter((player) => player.id != turnChange.id)[0];
       // Detect end Game
-      if (Board.getPlayerPieces(board, turn).length == 0) {
+      if (Board.getPlayerPieces(board, newturn).length == 0) {
         // Game ended
         setGameState(GameState.GameEnded);
       } else {
@@ -239,9 +254,11 @@ export default function Game() {
           camera={{ position: [0, 20, 20], zoom: 5 }}
           gl={{ preserveDrawingBuffer: true }}
           onPointerMissed={() => {
-            setSelected(null);
-            setPaths([]);
-            setMove(undefined);
+            if (gameState != GameState.GameEnded) {
+              setSelected(null);
+              setPaths([]);
+              setMove(undefined);
+            }
           }}
         >
           <Light lightRef={lightRef}></Light>

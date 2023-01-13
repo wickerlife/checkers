@@ -54,3 +54,6 @@ export const pathsAtom = focusAtom(boardAtom, (optic) => optic.prop("paths"));
 export const mandatoryPathsAtom = focusAtom(boardAtom, (optic) =>
   optic.prop("mandatoryPaths")
 );
+export const boardEnabledAtom = focusAtom(boardAtom, (optic) =>
+  optic.prop("enabled")
+);

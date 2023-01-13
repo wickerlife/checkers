@@ -56,7 +56,7 @@ export const GameBoard = () => {
 
       setTurnChange(move.player); //  This will signal the Game component to process the turn change and eventually end the game or impose a mandatory move
     }
-  }, [move, pieces, paths, turnChange]);
+  }, [move, pieces, paths]);
 
   return board ? (
     <group>

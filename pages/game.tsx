@@ -329,7 +329,10 @@ export default function Game() {
         <div className="fixed z-30 flex justify-center w-screen gap-4 top-24">
           {players.map((player) => {
             return (
-              <div className="text-gray-500 align-middle dark:text-gray-400">
+              <div
+                key={player.id}
+                className="text-gray-500 align-middle dark:text-gray-400"
+              >
                 <div className="flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px]">
                   <div
                     className={`w-[22px] h-[22px] rounded-full flex justify-center items-center`}

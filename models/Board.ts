@@ -8,6 +8,7 @@ interface BoardInterface {
   pieces: Array<Piece>;
   paths?: Array<Path>;
   enabled?: boolean;
+  mandatoryPaths?: Array<Path>;
 }
 
 export class Board {
@@ -15,12 +16,19 @@ export class Board {
   selected: Piece | null;
   enabled: boolean;
   paths: Array<Path>;
+  mandatoryPaths: Array<Path>;
 
-  constructor({ pieces, enabled = true, paths = [] }: BoardInterface) {
+  constructor({
+    pieces,
+    enabled = true,
+    paths = [],
+    mandatoryPaths = [],
+  }: BoardInterface) {
     this.pieces = pieces;
     this.enabled = enabled;
     this.selected = null;
     this.paths = paths;
+    this.mandatoryPaths = mandatoryPaths;
   }
 
   /**

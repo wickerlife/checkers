@@ -17,7 +17,9 @@ import { InputMenu } from "../components/ui/InputMenu";
 import { TurnWidget } from "../components/ui/TurnWidget";
 import { useKeyPress, useCurrentSize, Size } from "../hooks/hooks";
 import { Board } from "../models/Board";
+import { Piece } from "../models/Piece";
 import { Player } from "../models/Player";
+import { Position } from "../models/Position";
 import {
   boardAtom,
   playersAtom,
@@ -28,6 +30,7 @@ import {
   turnChangeAtom,
   gameStateAtom,
   GameState,
+  mandatoryPathsAtom,
 } from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
@@ -45,6 +48,7 @@ export default function Game() {
   const [gameState, setGameState] = useAtom(gameStateAtom);
   const setSelected = useSetAtom(selectedAtom);
   const setPaths = useSetAtom(pathsAtom);
+  const [mandatoryPaths, setMandatoryPaths] = useAtom(mandatoryPathsAtom);
   const [players, setPlayers] = useAtom(playersAtom);
   const [board, setBoard] = useAtom(boardAtom);
   const [turn, setTurn] = useAtom(turnAtom);
@@ -90,10 +94,26 @@ export default function Game() {
   useEffect(() => {
     if (players.length > 1) {
       setBoard(Board.startBoard(players.sort((a, b) => a.id - b.id)));
+      // setBoard(
+      //   new Board({
+      //     pieces: [
+      //       new Piece({
+      //         id: 2,
+      //         player: players[0],
+      //         position: new Position(3, 4),
+      //       }),
+      //       new Piece({
+      //         id: 1,
+      //         player: players[1],
+      //         position: new Position(5, 6),
+      //       }),
+      //     ],
+      //   })
+      // );
     }
   }, [players]);
 
-  // Handle Turn Change
+  // HANDLE TURN CHANGE
   useEffect(() => {
     if (turnChange != undefined) {
       let newturn = players.filter((player) => player.id != turnChange.id)[0];
@@ -103,16 +123,17 @@ export default function Game() {
         setGameState(GameState.GameEnded);
       } else {
         // Detect mandatory Move
-        let mandatory = Board.mandatoryPaths(board, turn);
-        if (mandatory.length > 0) {
-          // TODO Suggest mandatory path
+        let mandatory = Board.mandatoryPaths(board, newturn);
+        if (mandatory.length > 0 && mandatoryPaths.length == 0) {
+          // Suggest mandatory path
+          setMandatoryPaths(mandatory);
         }
 
         // Change turn normally
         setTurn(newturn);
       }
     }
-  }, [turnChange, players, board]);
+  }, [turnChange, players, board, mandatoryPaths]);
 
   // Listen to enter keypress
   useEffect(() => {
@@ -265,7 +286,8 @@ export default function Game() {
           <div className="text-gray-500 align-middle dark:text-gray-400">
             <div className=" flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[135px]">
               <div
-                className={`w-[22px] h-[22px] rounded-full inline-block bg-[${turn.color}]`}
+                className={`w-[22px] h-[22px] rounded-full inline-block`}
+                style={{ backgroundColor: turn.color }}
               ></div>
               {`${turn.username}'s turn`}
             </div>

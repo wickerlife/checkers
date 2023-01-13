@@ -4,17 +4,20 @@ import { Position } from "./Position";
 
 interface PathInterface {
   steps: Array<Position>;
+  mandatory?: boolean;
 }
 
 export class Path {
   steps: Array<Position>;
+  mandatory: boolean;
 
   valueOf() {
     return this.getSteps();
   }
 
-  constructor({ steps }: PathInterface) {
+  constructor({ steps, mandatory = false }: PathInterface) {
     this.steps = steps;
+    this.mandatory = mandatory;
   }
 
   compare = (path: Path): boolean => {

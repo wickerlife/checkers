@@ -9,6 +9,7 @@ import {
   turnAtom,
   piecesAtom,
   turnChangeAtom,
+  mandatoryPathsAtom,
 } from "../../utils/atoms";
 import { GamePiece } from "./GamePiece";
 import { BaseBoard } from "./BaseBoard";
@@ -16,7 +17,7 @@ import { Move } from "../../models/Move";
 import { Piece } from "../../models/Piece";
 import { DumbPiece } from "./DumbPiece";
 import { Position } from "../../models/Position";
-import { useFrame } from "@react-three/fiber";
+import { Board } from "../../models/Board";
 
 /**
  * Stateful component. Retrieves Board info from state.
@@ -26,15 +27,17 @@ export const GameBoard = () => {
   const board = useAtomValue(boardAtom);
   const pieceAtoms = useAtomValue(pieceAtomList);
   const [pieces, setPieces] = useAtom(piecesAtom);
-  const [selected, setSelected] = useAtom(selectedAtom);
+  const setSelected = useSetAtom(selectedAtom);
   const [paths, setPaths] = useAtom(pathsAtom);
+  const [mandatoryPaths, setMandatoryPaths] = useAtom(mandatoryPathsAtom);
   const [move, setMove] = useAtom(moveAtom);
-  const setTurnChange = useSetAtom(turnChangeAtom);
+  const [turnChange, setTurnChange] = useAtom(turnChangeAtom);
 
   useEffect(() => {
     // MOVES HAPPEN HERE!
     if (move != undefined) {
       setPaths([]);
+      setMandatoryPaths([]);
       let temp = new Piece({
         id: move.piece.id,
         player: move.player,
@@ -50,9 +53,10 @@ export const GameBoard = () => {
       filtered.push(temp);
       setPieces(filtered);
       setMove(undefined);
-      setTurnChange(move.player);
+
+      setTurnChange(move.player); //  This will signal the Game component to process the turn change and eventually end the game or impose a mandatory move
     }
-  }, [move, pieces]);
+  }, [move, pieces, paths, turnChange]);
 
   return board ? (
     <group>
@@ -70,18 +74,19 @@ export const GameBoard = () => {
       })}
 
       {/* Targets */}
-      {paths.map((path, index) => {
+      {[...paths, ...mandatoryPaths].map((path, index) => {
         const target = path.steps.at(-1)!;
+        const origin = Board.getPiece(board, path.steps[0])!;
 
-        if (selected == null) {
+        if (origin == undefined) {
           return;
         }
 
         const tpiece = new Piece({
           id: target.x * target.y,
-          player: selected!.player,
+          player: origin.player,
           position: target,
-          isdama: selected!.isdama,
+          isdama: origin.isdama,
         });
 
         return (
@@ -95,8 +100,8 @@ export const GameBoard = () => {
             onSelect={() => {
               setMove(
                 new Move({
-                  player: selected.player,
-                  piece: selected,
+                  player: origin.player,
+                  piece: origin,
                   position: target,
                   path: path,
                 })

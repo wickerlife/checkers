@@ -7,6 +7,7 @@ import { Player } from "../models/Player";
 import { selectiveyellow } from "./colors";
 import { Piece } from "../models/Piece";
 import { Move } from "../models/Move";
+import { optic } from "optics-ts";
 
 export enum GameState {
   PlayerRegistration,
@@ -50,3 +51,6 @@ export const enabledBoardAtom = focusAtom(boardAtom, (optic) =>
   optic.prop("enabled")
 );
 export const pathsAtom = focusAtom(boardAtom, (optic) => optic.prop("paths"));
+export const mandatoryPathsAtom = focusAtom(boardAtom, (optic) =>
+  optic.prop("mandatoryPaths")
+);

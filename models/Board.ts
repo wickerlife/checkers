@@ -94,6 +94,16 @@ export class Board {
   }
 
   /**
+   * Returns all pieces still present of a select player
+   * @param piece
+   * @param board
+   * @returns Array<Path>
+   */
+  static getPlayerPieces(board: Board, player: Player): Array<Piece> {
+    return board.pieces.filter((piece) => piece.player.id == player.id);
+  }
+
+  /**
    * Returns all possible moves a piece can make
    * @param piece
    * @param board
@@ -226,6 +236,36 @@ export class Board {
       (path, index) =>
         path.getEaten(board).length == paths[0].getEaten(board).length &&
         path.getSteps() > 1
+    );
+
+    return filtered;
+  }
+
+  /**
+   * Returns the mandatory path if present
+   * @param piece
+   * @param board
+   * @returns Array<Path>
+   */
+  static mandatoryPaths(board: Board, turn: Player): Array<Path> {
+    let playerPieces = Board.getPlayerPieces(board, turn);
+    let allPaths = [] as Array<Path>;
+
+    // Get all paths where at least a piece is eaten
+    playerPieces.forEach((piece) => {
+      let paths = Board.possiblePaths(board, piece);
+      paths.forEach((path) => {
+        if (path.getEaten(board).length > 0) allPaths.push(path);
+      });
+    });
+    allPaths.sort(
+      (a, b) => b.getEaten(board).length - a.getEaten(board).length
+    );
+
+    // Filter paths and only get the one with most eaten pieces
+    let filtered = allPaths.filter(
+      (path, index) =>
+        path.getEaten(board).length == allPaths[0].getEaten(board).length
     );
 
     return filtered;

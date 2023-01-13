@@ -8,9 +8,16 @@ import { selectiveyellow } from "./colors";
 import { Piece } from "../models/Piece";
 import { Move } from "../models/Move";
 
+export enum GameState {
+  PlayerRegistration,
+  GameStarted,
+  GameEnded,
+}
+
 // Base State Atoms
 export const playersConnectedAtom = atom(false);
 export const playersAtom = atom<Array<Player>>([]);
+export const gameStateAtom = atom<GameState>(GameState.PlayerRegistration);
 export const boardAtom = atom<Board>(Board.randomBoard());
 export const turnChangeAtom = atom<Player | undefined>(undefined);
 export const turnAtom = atom<Player>(

@@ -16,6 +16,7 @@ import { Move } from "../../models/Move";
 import { Piece } from "../../models/Piece";
 import { DumbPiece } from "./DumbPiece";
 import { Position } from "../../models/Position";
+import { useFrame } from "@react-three/fiber";
 
 /**
  * Stateful component. Retrieves Board info from state.

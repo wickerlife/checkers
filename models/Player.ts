@@ -2,6 +2,7 @@ interface PlayerInterface {
   id: number;
   username: string;
   color: string;
+  wins?: number;
 }
 
 export class Player {
@@ -10,11 +11,11 @@ export class Player {
   color: string;
   wins: number;
 
-  constructor({ id, username, color }: PlayerInterface) {
+  constructor({ id, username, color, wins = 0 }: PlayerInterface) {
     this.id = id;
     this.username = username;
     this.color = color;
-    this.wins = 0;
+    this.wins = wins;
   }
 
   rename(username: string) {

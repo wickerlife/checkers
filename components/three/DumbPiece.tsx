@@ -32,15 +32,6 @@ export const DumbPiece = ({
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
 
-  useFrame(() => {
-    let vec = new Vector3(
-      piece.position.x - 3.5,
-      piece.position.z,
-      piece.position.y - 3.5
-    );
-    piece.ref.current.position.lerp(vec, 0.1);
-  });
-
   return (
     <group>
       <mesh

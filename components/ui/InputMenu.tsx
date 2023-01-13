@@ -39,7 +39,7 @@ export const InputMenu = ({
       >
         arrow_back
       </span>
-      <div className="flex flex-col gap-5 min-w-[350px] ">
+      <div className="flex flex-col gap-5 min-w-[300px] ">
         <div>
           <label htmlFor="input" className=" text-russianviolet">
             {label}

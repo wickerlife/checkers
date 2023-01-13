@@ -440,18 +440,26 @@ export default function Game() {
 
         {/** Overlay Turn Indicator */}
         <div
-          className={`fixed flex bottom-[44px] place-content-center w-screen z-30 ${
+          className={`fixed flex bottom-[32px] items-center justify-center w-screen flex-col z-30 gap-3 ${
             gameState == GameState.GameStarted ? "" : "invisible"
           }`}
         >
           <div className="text-gray-500 align-middle dark:text-gray-400">
-            <div className="flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[135px]">
+            <div className="max-w-fit flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[135px]">
               <div
                 className={`w-[22px] h-[22px] rounded-full inline-block`}
                 style={{ backgroundColor: turn.color }}
               ></div>
               {`${turn.username}'s turn`}
             </div>
+          </div>
+          <div
+            className={
+              "text-russianviolet font-medium text-sm " +
+              `${mandatoryPaths.length > 0 ? "" : "invisible"}`
+            }
+          >
+            Mandatory Move
           </div>
         </div>
       </div>

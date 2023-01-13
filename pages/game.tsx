@@ -61,21 +61,22 @@ export default function Game() {
   const setMove = useSetAtom(moveAtom);
 
   const generateInitialBoard = () => {
-    //return Board.startBoard(players.sort((a, b) => a.id - b.id));
-    return new Board({
-      pieces: [
-        new Piece({
-          id: 1,
-          player: players[1],
-          position: new Position(3, 4),
-        }),
-        new Piece({
-          id: 2,
-          player: players[0],
-          position: new Position(5, 6),
-        }),
-      ],
-    });
+    return Board.startBoard(players.sort((a, b) => a.id - b.id));
+    // CODE BELOW IS FOR DEV PURPOSES
+    // return new Board({
+    //   pieces: [
+    //     new Piece({
+    //       id: 1,
+    //       player: players[1],
+    //       position: new Position(3, 4),
+    //     }),
+    //     new Piece({
+    //       id: 2,
+    //       player: players[0],
+    //       position: new Position(5, 6),
+    //     }),
+    //   ],
+    // });
   };
 
   interface ResetGameInterface {
@@ -234,16 +235,16 @@ export default function Game() {
   useKeyPress(() => setPressedEscape(true), "Escape");
 
   //PREVENT PAGE REFRESH
-  // useEffect(() => {
-  //   const unloadCallback = (event: any) => {
-  //     event.preventDefault();
-  //     event.returnValue = "";
-  //     return "";
-  //   };
+  useEffect(() => {
+    const unloadCallback = (event: any) => {
+      event.preventDefault();
+      event.returnValue = "";
+      return "";
+    };
 
-  //   window.addEventListener("beforeunload", unloadCallback);
-  //   return () => window.removeEventListener("beforeunload", unloadCallback);
-  // }, []);
+    window.addEventListener("beforeunload", unloadCallback);
+    return () => window.removeEventListener("beforeunload", unloadCallback);
+  }, []);
 
   return (
     <>
@@ -418,7 +419,7 @@ export default function Game() {
           <div
             className={`"text-gray-500 align-middle dark:text-gray-400 cursor-pointer"`}
           >
-            <div className=" hover:scale-105flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px] h-full">
+            <div className=" hover:scale-105 flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px] h-full">
               <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
                 Esc
               </kbd>{" "}

@@ -55,12 +55,12 @@ export const GamePiece = ({ pieceAtom }: PieceInterface) => {
         <DumbPiece
           piece={piece!}
           enabled={
-            turn.id == piece?.player.id &&
+            turn?.id == piece?.player.id &&
             board.mandatoryPaths.length == 0 &&
             board.enabled
           }
           onSelect={() => {
-            if (enabled && turn.id == piece?.player.id) {
+            if (enabled && turn?.id == piece?.player.id) {
               setSelected(piece!);
               setPaths(Board.possiblePaths(board, piece!));
             }

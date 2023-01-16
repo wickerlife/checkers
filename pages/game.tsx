@@ -7,15 +7,15 @@ import {
   Selection,
   DepthOfField,
 } from "@react-three/postprocessing";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
 import { Ref, Suspense, useEffect, useRef, useState } from "react";
 import React from "react-dom";
 import { DirectionalLight } from "three";
 import { GameBoard } from "../components/three/GameBoard";
 import { Light } from "../components/three/Light";
+import { Button } from "../components/ui/Button";
 import { InputMenu } from "../components/ui/InputMenu";
-import { TurnWidget } from "../components/ui/TurnWidget";
 import { useKeyPress, useCurrentSize, Size } from "../hooks/hooks";
 import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
@@ -61,22 +61,22 @@ export default function Game() {
   const setMove = useSetAtom(moveAtom);
 
   const generateInitialBoard = () => {
-    return Board.startBoard(players.sort((a, b) => a.id - b.id));
+    // return Board.startBoard(players.sort((a, b) => a.id - b.id));
     // CODE BELOW IS FOR DEV PURPOSES
-    // return new Board({
-    //   pieces: [
-    //     new Piece({
-    //       id: 1,
-    //       player: players[1],
-    //       position: new Position(3, 4),
-    //     }),
-    //     new Piece({
-    //       id: 2,
-    //       player: players[0],
-    //       position: new Position(5, 6),
-    //     }),
-    //   ],
-    // });
+    return new Board({
+      pieces: [
+        new Piece({
+          id: 1,
+          player: players[1],
+          position: new Position(3, 4),
+        }),
+        new Piece({
+          id: 2,
+          player: players[0],
+          position: new Position(5, 6),
+        }),
+      ],
+    });
   };
 
   interface ResetGameInterface {
@@ -158,6 +158,7 @@ export default function Game() {
       setMandatoryPaths([]);
       setMove(undefined);
       setSelected(null);
+      setTurn(undefined);
       setTurnChange(undefined);
       setBoardEnabled(false);
       setOverlay(true);
@@ -221,8 +222,8 @@ export default function Game() {
     } else if (players.length < 1) {
       router.back();
     } else if (gameState == GameState.GameEnded && !overlay) {
-      resetGame({ resetPlayers: true });
       router.push("/");
+      resetGame({ resetPlayers: true });
     } else {
       // Open Options Menu
     }
@@ -249,14 +250,14 @@ export default function Game() {
   return (
     <>
       <div
-        className={`w-screen overflow-hidden  ${
+        className={` overflow-hidden  ${
           players.length < 2 ? "" : "absolute top-[50%] translate-y-[-45%] "
         }`}
       >
         <div className="flex flex-col overflow-hidden">
           {/* Player name selection -- only visible when submiting player names */}
           <div
-            className={`w-screen place-content-center ${
+            className={` px-4 ${
               players.length != 2 ? "visible h-screen" : "invisible h-0"
             } flex flex-col justify-center items-center`}
           >
@@ -327,24 +328,9 @@ export default function Game() {
         </div>
 
         {/* Player Stats */}
-        <div className="fixed z-30 flex justify-center w-screen gap-4 top-24">
+        <div className="fixed z-30 flex justify-center w-screen gap-4 top-24 sm:top-12">
           {players.map((player) => {
-            return (
-              <div
-                key={player.id}
-                className="text-gray-500 align-middle dark:text-gray-400"
-              >
-                <div className="flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px]">
-                  <div
-                    className={`w-[22px] h-[22px] rounded-full flex justify-center items-center`}
-                    style={{ backgroundColor: player.color }}
-                  >
-                    {player.wins}
-                  </div>
-                  {`${player.username}`}
-                </div>
-              </div>
-            );
+            return Button({ player: player, active: player.id == turn?.id });
           })}
 
           <div
@@ -367,6 +353,7 @@ export default function Game() {
                 setSelected(null);
                 setPaths([]);
                 setMove(undefined);
+                setTurn();
               }
             }}
           >
@@ -412,14 +399,15 @@ export default function Game() {
 
         {/* End Game Menu */}
         <div
-          className={`fixed flex bottom-[44px] place-content-center w-screen z-30 gap-4 ${
+          className={`fixed flex bottom-24 sm:bottom-12 place-content-center w-screen z-30 gap-4 ${
             gameState == GameState.GameEnded && !overlay ? "" : "invisible"
           }`}
         >
           <div
             className={`"text-gray-500 align-middle dark:text-gray-400 cursor-pointer"`}
+            onClick={() => setPressedEscape(true)}
           >
-            <div className=" hover:scale-105 flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px] h-full">
+            <div className="cursor-pointer hover:scale-105 flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px] h-full">
               <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
                 Esc
               </kbd>{" "}
@@ -428,6 +416,7 @@ export default function Game() {
           </div>
           <div
             className={`"text-gray-500 align-middle dark:text-gray-400 cursor-pointer "`}
+            onClick={() => setPressedEnter(true)}
           >
             <div className="hover:scale-105 flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[77px] h-full">
               <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500">
@@ -440,19 +429,10 @@ export default function Game() {
 
         {/** Overlay Turn Indicator */}
         <div
-          className={`fixed flex bottom-[32px] items-center justify-center w-screen flex-col z-30 gap-3 ${
+          className={`fixed flex bottom-24 sm:bottom-12 items-center justify-center w-screen flex-col z-30 gap-3 ${
             gameState == GameState.GameStarted ? "" : "invisible"
           }`}
         >
-          <div className="text-gray-500 align-middle dark:text-gray-400">
-            <div className="max-w-fit flex align-middle justify-center items-center gap-[11px] px-4 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500 min-w-[135px]">
-              <div
-                className={`w-[22px] h-[22px] rounded-full inline-block`}
-                style={{ backgroundColor: turn.color }}
-              ></div>
-              {`${turn.username}'s turn`}
-            </div>
-          </div>
           <div
             className={
               "text-russianviolet font-medium text-sm " +

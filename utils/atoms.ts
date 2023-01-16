@@ -21,7 +21,7 @@ export const playersAtom = atom<Array<Player>>([]);
 export const gameStateAtom = atom<GameState>(GameState.PlayerRegistration);
 export const boardAtom = atom<Board>(Board.randomBoard());
 export const turnChangeAtom = atom<Player | undefined>(undefined);
-export const turnAtom = atom<Player>(
+export const turnAtom = atom<Player | undefined>(
   new Player({ id: 1, username: "Player1", color: selectiveyellow })
 );
 export const moveAtom = atom<Move | undefined>(undefined);

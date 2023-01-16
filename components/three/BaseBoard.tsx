@@ -1,6 +1,5 @@
 import React from "react";
 import { Euler } from "three";
-import { Position } from "../../models/Position";
 import { mistyrose, russianviolet, vividtangerine } from "../../utils/colors";
 
 const commonMaterialProps = {
@@ -15,6 +14,10 @@ const edgeDefaultLength = 8;
 const edgeDefaultHeight = 0.2;
 const edgeDefaultWidth = 0.5;
 
+/**
+ *
+ * @returns
+ */
 export const BaseBoard = () => {
   return (
     <group>

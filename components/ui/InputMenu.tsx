@@ -1,6 +1,4 @@
-import { useAtom } from "jotai";
-import React, { useState } from "react";
-import { playersAtom } from "../../utils/atoms";
+import React from "react";
 
 interface InputMenuInterface {
   visible?: boolean;
@@ -27,20 +25,28 @@ export const InputMenu = ({
   onChange,
   onBack,
 }: InputMenuInterface) => {
-  const [players, setPlayers] = useAtom(playersAtom);
-
   return (
-    <div className="flex gap-[22px]">
+    <div className="flex w-full max-w-[350px] gap-0 sm:gap-[22px]">
       <span
         onClick={() => onBack()}
         className={` top-0 material-symbols-outlined text-russianviolet hover:cursor-pointer ${
-          backBtn && visible ? "visible" : "invisible"
+          backBtn && visible
+            ? "invisible  w-0  sm:visible sm:w-auto"
+            : "invisible"
         }`}
       >
         arrow_back
       </span>
-      <div className="flex flex-col gap-5 min-w-[300px] ">
-        <div>
+      <div className="flex flex-col w-full gap-5">
+        <div className="flex">
+          <span
+            onClick={() => onBack()}
+            className={` top-0 material-symbols-outlined text-russianviolet hover:cursor-pointer sm:w-0 ${
+              backBtn && visible ? "visible sm:invisible pr-2" : "invisible w-0"
+            }`}
+          >
+            arrow_back
+          </span>
           <label htmlFor="input" className=" text-russianviolet">
             {label}
           </label>
@@ -52,7 +58,7 @@ export const InputMenu = ({
           }}
           type="text"
           placeholder={inputHint}
-          className={`h-[55px] px-[18px] bg-transparent outline  outline- outline-fadedrose rounded-[11px] outline-[2px] focus:outline-russianviolet focus:outline-[1.5px] placeholder-hint`}
+          className={`h-[55px] px-[18px] bg-transparent outline outline-fadedrose rounded-[11px] outline-[2px] focus:outline-russianviolet focus:outline-[1.5px] placeholder-hint`}
           value={value}
         />
         <button
@@ -68,7 +74,7 @@ export const InputMenu = ({
           {btnText}
         </button>
       </div>
-      <span className="w-[24px]"></span>
+      <span className="w-0 sm:w-[24px]"></span>
     </div>
   );
 };

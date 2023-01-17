@@ -4,10 +4,15 @@ import { DirectionalLight, OrthographicCamera } from "three";
 interface LightInterface {
   lightRef: Ref<DirectionalLight>;
 }
+
+/**
+ * Displayes a 3D light object
+ *
+ * @returns {JSX.Element} Light component
+ */
 export const Light = ({ lightRef }: LightInterface) => {
   const camera = useRef() as Ref<OrthographicCamera>;
-  //useHelper(camera, CameraHelper);
-  //useHelper(light, DirectionalLightHelper);
+
   return (
     <>
       <ambientLight intensity={0.4} />

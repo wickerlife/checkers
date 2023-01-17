@@ -8,6 +8,11 @@ interface GameModeInterface {
   children: any;
 }
 
+/**
+ * Game mode selection interface
+ *
+ * @returns {JSX.Element} Game component
+ */
 export const GameMode = ({
   subtitle,
   heading,

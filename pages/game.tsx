@@ -69,22 +69,22 @@ export default function Game() {
    * @returns {Board} An instance of Board
    */
   const generateInitialBoard = () => {
-    // return Board.startBoard(players.sort((a, b) => a.id - b.id));
+    return Board.startBoard(players.sort((a, b) => a.id - b.id));
     // CODE BELOW IS FOR DEV PURPOSES
-    return new Board({
-      pieces: [
-        new Piece({
-          id: 1,
-          player: players[1],
-          position: new Position(3, 4),
-        }),
-        new Piece({
-          id: 2,
-          player: players[0],
-          position: new Position(5, 6),
-        }),
-      ],
-    });
+    // return new Board({
+    //   pieces: [
+    //     new Piece({
+    //       id: 1,
+    //       player: players[1],
+    //       position: new Position(3, 4),
+    //     }),
+    //     new Piece({
+    //       id: 2,
+    //       player: players[0],
+    //       position: new Position(5, 6),
+    //     }),
+    //   ],
+    // });
   };
 
   interface ResetGameInterface {

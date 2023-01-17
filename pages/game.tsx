@@ -69,22 +69,22 @@ export default function Game() {
    * @returns {Board} An instance of Board
    */
   const generateInitialBoard = () => {
-    return Board.startBoard(players.sort((a, b) => a.id - b.id));
+    // return Board.startBoard(players.sort((a, b) => a.id - b.id));
     // CODE BELOW IS FOR DEV PURPOSES
-    // return new Board({
-    //   pieces: [
-    //     new Piece({
-    //       id: 1,
-    //       player: players[1],
-    //       position: new Position(3, 4),
-    //     }),
-    //     new Piece({
-    //       id: 2,
-    //       player: players[0],
-    //       position: new Position(5, 6),
-    //     }),
-    //   ],
-    // });
+    return new Board({
+      pieces: [
+        new Piece({
+          id: 1,
+          player: players[1],
+          position: new Position(3, 4),
+        }),
+        new Piece({
+          id: 2,
+          player: players[0],
+          position: new Position(5, 6),
+        }),
+      ],
+    });
   };
 
   interface ResetGameInterface {
@@ -338,7 +338,7 @@ export default function Game() {
       </div>
       {/* Game board section */}
       <div
-        className={`fixed h-screen flex-1 overflow-hidden w-screen z-20 ${
+        className={`fixed h-screen flex-1 overflow-hidden w-screen z-10 ${
           players.length == 2 ? "visible" : "invisible h-0 w-0"
         }`}
       >
@@ -392,7 +392,6 @@ export default function Game() {
                 setSelected(null);
                 setPaths([]);
                 setMove(undefined);
-                setTurn();
               }
             }}
           >

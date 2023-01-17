@@ -8,6 +8,7 @@ import {
   DepthOfField,
 } from "@react-three/postprocessing";
 import { useAtom, useSetAtom } from "jotai";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { Ref, Suspense, useEffect, useRef, useState } from "react";
 import React from "react-dom";
@@ -288,6 +289,13 @@ export default function Game() {
 
   return (
     <>
+      <Head>
+        <title>
+          {gameState == GameState.PlayerRegistration
+            ? "Register Players"
+            : "Mai Checkers: Game"}
+        </title>
+      </Head>
       <div
         className={` overflow-hidden  ${
           players.length < 2 ? "" : "absolute top-[50%] translate-y-[-45%] "

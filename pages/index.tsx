@@ -26,6 +26,7 @@ import { GameMode } from "../components/ui/GameMode";
 import { Player } from "../models/Player";
 import { nypink, selectiveyellow } from "../utils/colors";
 import { DirectionalLight } from "three";
+import Head from "next/head";
 
 /**
  * Index page of the website
@@ -52,6 +53,9 @@ export default function Home() {
 
   return board ? (
     <>
+      <Head>
+        <title>Mai Checkers</title>
+      </Head>
       <div className="fixed z-0 items-center justify-center w-screen h-screen align-middle place-content-center">
         <Canvas
           dpr={1} // resolution

@@ -7,6 +7,11 @@ interface BoardInterface {
   board: Board;
 }
 
+/**
+ * Board that reflects an initial state of a disabled (@link Board).
+ *
+ * @returns {JSX.Element} DumbBoard component
+ */
 export const DumbBoard = ({ board }: BoardInterface) => {
   return (
     <group>

@@ -36,9 +36,13 @@ import {
 } from "../utils/atoms";
 import { nypink, selectiveyellow } from "../utils/colors";
 
+/**
+ * Multiplayer, One-Device Game Mode
+ * @returns {JSX.Element} Game component
+ */
 export default function Game() {
-  const router = useRouter();
-  const lightRef = useRef() as Ref<DirectionalLight>;
+  const router = useRouter(); // React Router
+  const lightRef = useRef() as Ref<DirectionalLight>; // Used for EffectComposer lights and effects
 
   // Local state
   const [playerName, setPlayerName] = useState("");
@@ -60,23 +64,27 @@ export default function Game() {
   const [turnChange, setTurnChange] = useAtom(turnChangeAtom);
   const setMove = useSetAtom(moveAtom);
 
+  /**
+   * Function returns the initial Board state for the game.
+   * @returns {Board} An instance of Board
+   */
   const generateInitialBoard = () => {
-    // return Board.startBoard(players.sort((a, b) => a.id - b.id));
+    return Board.startBoard(players.sort((a, b) => a.id - b.id));
     // CODE BELOW IS FOR DEV PURPOSES
-    return new Board({
-      pieces: [
-        new Piece({
-          id: 1,
-          player: players[1],
-          position: new Position(3, 4),
-        }),
-        new Piece({
-          id: 2,
-          player: players[0],
-          position: new Position(5, 6),
-        }),
-      ],
-    });
+    // return new Board({
+    //   pieces: [
+    //     new Piece({
+    //       id: 1,
+    //       player: players[1],
+    //       position: new Position(3, 4),
+    //     }),
+    //     new Piece({
+    //       id: 2,
+    //       player: players[0],
+    //       position: new Position(5, 6),
+    //     }),
+    //   ],
+    // });
   };
 
   interface ResetGameInterface {
@@ -84,6 +92,15 @@ export default function Game() {
     winner?: Player;
   }
 
+  /**
+   * Resets the game state.
+   *
+   * If [resetPlayers] = true, then player state will be reset.
+   * Else, the player state will be mantained (new game for the same players)
+   *  The turn state will be changed to the winning player.
+   * @param {boolean} resetPlayers Whether to reset the Players state
+   * @param {Player} winner The winner Player instance
+   */
   const resetGame = ({ resetPlayers, winner }: ResetGameInterface) => {
     setPaths([]);
     setMandatoryPaths([]);
@@ -105,6 +122,12 @@ export default function Game() {
     }
   };
 
+  /**
+   * Registers a player into the state using the input value.
+   *
+   * @param {string} value Input value for the name of the Player.
+   * @param {Array<Player>} players Array of players already in state.
+   */
   const addPlayer = (value: string, players: Array<Player>) => {
     let player = new Player({
       id: players.length > 0 ? 2 : 1,
@@ -120,14 +143,25 @@ export default function Game() {
     setPlayers([...players, player]);
   };
 
+  /**
+   * Removes the last index player from the state
+   *
+   * @param {Array<Player>} players Current state of players
+   */
   const removePlayer = (players: any) => {
-    console.log("remove player");
     let temp = players;
     let prev = temp.shift();
     setPlayers(temp);
     if (prev) setPlayerName(prev.username);
   };
 
+  /**
+   * Calculates minimum camera distance from Three.js object in
+   *  the scene.
+   *
+   * @param {Size} size Current window size.
+   * @returns {number} Minimum distance calculated
+   */
   const getMinDistance = (size: Size) => {
     let ratio = size.width / size.height;
 
@@ -135,15 +169,18 @@ export default function Game() {
     else return 60 / ratio;
   };
 
-  const getMaxDistance = (size: Size) => {
-    return getMinDistance(size);
-  };
-
+  /**
+   * Called once on page load.
+   * Prefetches the index page for faster routing
+   */
   useEffect(() => {
     router.prefetch("/");
   }, []);
 
-  // Initialize correct board
+  /**
+   * When player state is updated, initialize the GameBoard with the correct
+   *  Board state.
+   */
   useEffect(() => {
     if (players.length > 1 && gameState == GameState.PlayerRegistration) {
       setBoard(generateInitialBoard());
@@ -191,7 +228,7 @@ export default function Game() {
     }
   }, [turnChange, players, board, mandatoryPaths]);
 
-  // Listen to enter keypress
+  // Listen to ENTER keypress
   useEffect(() => {
     if (!pressedEnter) return;
 
@@ -213,7 +250,7 @@ export default function Game() {
     setPressedEnter(false);
   }, [pressedEnter, players, playerName, gameState, overlay, winner]);
 
-  // Listen to escape keypress
+  // Listen to ESCAPE (esc) keypress
   useEffect(() => {
     if (!pressedEscape) return;
 
@@ -225,7 +262,7 @@ export default function Game() {
       router.push("/");
       resetGame({ resetPlayers: true });
     } else {
-      // Open Options Menu
+      // Open Options Menu -> Not implemented
     }
 
     setPressedEscape(false);
@@ -235,7 +272,9 @@ export default function Game() {
   useKeyPress(() => setPressedEnter(true), "Enter");
   useKeyPress(() => setPressedEscape(true), "Escape");
 
-  //PREVENT PAGE REFRESH
+  /**
+   * Prevent Page-Refresh so that game state is not accidentally lost
+   */
   useEffect(() => {
     const unloadCallback = (event: any) => {
       event.preventDefault();
@@ -365,7 +404,7 @@ export default function Game() {
               minPolarAngle={size.width < 650 ? Math.PI / 9 : Math.PI / 4}
               maxPolarAngle={size.width < 650 ? Math.PI / 9 : Math.PI / 3}
               minDistance={getMinDistance(size)}
-              maxDistance={getMaxDistance(size)}
+              maxDistance={getMinDistance(size)}
               enablePan={false}
               enableZoom={false}
               enableRotate={size.width < 650 ? false : true}

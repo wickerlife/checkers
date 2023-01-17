@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   boardAtom,
@@ -6,7 +6,6 @@ import {
   pieceAtomList,
   selectedAtom,
   pathsAtom,
-  turnAtom,
   piecesAtom,
   turnChangeAtom,
   mandatoryPathsAtom,
@@ -21,7 +20,8 @@ import { Board } from "../../models/Board";
 
 /**
  * Stateful component. Retrieves Board info from state.
- * @returns JSX.Element
+ *
+ * @returns {JSX.Element}
  */
 export const GameBoard = () => {
   const board = useAtomValue(boardAtom);

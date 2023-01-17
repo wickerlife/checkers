@@ -8,6 +8,13 @@ interface ButtonInterface {
   active?: boolean;
 }
 
+/**
+ * Button displaying player stats during the game.
+ *
+ * @param {Player} player
+ * @param {boolean} [active] Whether it's the current player's turn.
+ * @returns {JSX.Element} Game component
+ */
 export const Button = ({ player, active = false }: ButtonInterface) => {
   return (
     <div

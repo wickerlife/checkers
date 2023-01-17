@@ -5,6 +5,11 @@ export enum Direction {
   BottomLeft,
 }
 
+/**
+ * @property {number} x The x coordinate
+ * @property {number} y The Y coordinate
+ * @property {number} [z] The Z coordinate, [Z]=0.15
+ */
 export class Position {
   x: number;
   y: number;
@@ -16,6 +21,13 @@ export class Position {
     this.z = z;
   }
 
+  /**
+   * Checks if given coordinates correspond to a valid Position.
+   *
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
   static isValidPosition(x: number, y: number): boolean {
     if (x < 0 || x > 7 || y < 0 || y > 7) return false;
 
@@ -29,7 +41,10 @@ export class Position {
 
   /**
    * Checks whether the given Position has reached the opposite player's side
-   * @returns boolean
+   *
+   * @param {Position} position The Position to check
+   * @param {number} playerId Unique identifier of the player
+   * @returns {boolean}
    */
   static isEnemySide(position: Position, playerId: number) {
     if (position.y == 0 && playerId == 1) {
@@ -44,9 +59,11 @@ export class Position {
 
   /**
    * Retuns the opposite Direction from the argument
-   * @returns Direction
+   *
+   * @param {Direction} direction Direction to examine
+   * @returns {Direction}
    */
-  static getOppositeDirection(direction: Direction) {
+  static getOppositeDirection(direction: Direction): Direction {
     switch (direction) {
       case Direction.TopLeft:
         return Direction.BottomRight;
@@ -59,6 +76,12 @@ export class Position {
     }
   }
 
+  /**
+   * Returns the neighbouring position based on a given Direction.
+   *
+   * @param {Direction} direction
+   * @returns {Position | undefined}
+   */
   getNeighbour(direction: Direction): Position | undefined {
     switch (direction) {
       case Direction.TopLeft:
@@ -88,6 +111,12 @@ export class Position {
     return undefined;
   }
 
+  /**
+   * Compares the current Position with a given position.
+   *
+   * @param {Position} npos Position to compare
+   * @returns
+   */
   compare(npos: Position): boolean {
     return npos.x == this.x && npos.y == this.y;
   }

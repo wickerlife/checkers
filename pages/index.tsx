@@ -1,7 +1,7 @@
 import React, { Ref, Suspense, useEffect, useRef } from "react";
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import {
   Bloom,
   DepthOfField,
@@ -27,9 +27,14 @@ import { Player } from "../models/Player";
 import { nypink, selectiveyellow } from "../utils/colors";
 import { DirectionalLight } from "three";
 
+/**
+ * Index page of the website
+ * @returns {JSX.Element} Game component
+ */
 export default function Home() {
   const router = useRouter();
   const lightRef = useRef() as Ref<DirectionalLight>;
+
   // Load initial state
   const [modal, showModal] = useState(false);
   const [board] = useState(Board.randomBoard());

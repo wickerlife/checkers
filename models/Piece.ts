@@ -10,6 +10,16 @@ export interface PieceInterface {
   isdama?: boolean;
 }
 
+/**
+ * Class that identifies a piece on the board.
+ *
+ * @property {number} id Unique identifier for each piece on the board.
+ * @property {string} color Color HEX code for the piece (redoundant).
+ * @property {Player} player Player the Piece belongs to.
+ * @property {Position} position x-y-z coordinates of the Piece on the board.
+ * @property {boolean} isdama Whether the Piece is a Dama.
+ * @property {Ref} ref Ref to the Three.js 3D object.
+ */
 export class Piece {
   id: number;
   color: string;
@@ -27,6 +37,9 @@ export class Piece {
     this.ref = React.createRef();
   }
 
+  /**
+   * @returns {string} Returns the HEX string of the color of the Dama depending on the piece color.
+   */
   getDamaColor() {
     if (this.color == selectiveyellow) {
       return orange;

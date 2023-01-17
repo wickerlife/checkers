@@ -10,6 +10,14 @@ interface MoveInterface {
   path: Path;
 }
 
+/**
+ * Class that wraps the state of a move taken by a player.
+ *
+ * @property {Player} player The player that makes the move
+ * @property {Piece} piece The piece moved
+ * @property {Position} position The target position
+ * @property {Path} path The path taken by the piece
+ */
 export class Move {
   player: Player;
   piece: Piece;

@@ -13,6 +13,11 @@ interface InputMenuInterface {
   onBack?: any;
 }
 
+/**
+ * Input Menu for the player's name
+ *
+ * @returns {JSX.Element} Game component
+ */
 export const InputMenu = ({
   visible = true,
   value = "",

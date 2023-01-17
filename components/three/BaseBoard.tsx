@@ -15,8 +15,9 @@ const edgeDefaultHeight = 0.2;
 const edgeDefaultWidth = 0.5;
 
 /**
+ * Board base (squares and sides)
  *
- * @returns
+ * @returns {JSX.Element} Game component
  */
 export const BaseBoard = () => {
   return (

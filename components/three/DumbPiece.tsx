@@ -19,6 +19,11 @@ type GTLFResults = GLTF & {
   materials: {};
 };
 
+/**
+ * Displayes a 3D object based on the piece provided in its parameters
+ *
+ * @returns {JSX.Element} DumbPiece component
+ */
 export const DumbPiece = ({
   piece,
   enabled = false,

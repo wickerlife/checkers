@@ -1,16 +1,14 @@
 import { Select } from "@react-three/postprocessing";
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, { useState } from "react";
+import React from "react";
 import { Board } from "../../models/Board";
 import { Piece } from "../../models/Piece";
 import {
   boardAtom,
   enabledBoardAtom,
-  moveAtom,
   selectedAtom,
   pathsAtom,
   turnAtom,
-  mandatoryPathsAtom,
 } from "../../utils/atoms";
 import { DumbPiece } from "./DumbPiece";
 
@@ -19,19 +17,28 @@ interface PieceInterface {
 }
 
 /**
- * Stateful component
- * @param {pieceAtom}
- * @returns JSX.Element
+ * Stateful component, displays a Piece based on the state value of a piece.
+ *
+ * @param {PrimitiveAtom} pieceAtom
+ * @returns {JSX.Element}
  */
 export const GamePiece = ({ pieceAtom }: PieceInterface) => {
   const piece = useAtomValue(pieceAtom);
   const enabled = useAtomValue(enabledBoardAtom);
   const turn = useAtomValue(turnAtom);
   const board = useAtomValue(boardAtom);
+
   // Process Piece Click
   const [selected, setSelected] = useAtom(selectedAtom);
   const setPaths = useSetAtom(pathsAtom);
 
+  /**
+   * Checks whether, at turn change, this piece is involved in a mandatory move.
+   *
+   * @param {Board} board
+   * @param {number} id
+   * @returns {boolean}
+   */
   const isMandatoryOrigin = (board: Board, id: number) => {
     let isorigin = false;
     if (board.mandatoryPaths.length != 0) {

@@ -11,6 +11,15 @@ interface BoardInterface {
   mandatoryPaths?: Array<Path>;
 }
 
+/**
+ * Board class for game state management
+ *
+ * @property {Array<Piece>} pieces List of pieces on the board
+ * @property {Piece | null} selected Currently selected piece by the player
+ * @property {boolean} enabled Whether the board is clickable
+ * @property {Array<Path>} paths List of paths that a selected piece can take
+ * @property {Array<Path>} mandatoryPaths List of mandatory steps a player may have to take
+ */
 export class Board {
   pieces: Array<Piece>;
   selected: Piece | null;
@@ -32,9 +41,10 @@ export class Board {
   }
 
   /**
-   * Returns a layout version of the board
-   * @param board
-   * @returns Array
+   * Returns a layout version of the board (a bi-dimensional array of pieces).
+   *
+   * @param {Board} board
+   * @returns {Array<Array<Piece | null>>} layout board.
    */
   static layout(board: Board): (Piece | undefined)[][] {
     let grid: Array<Array<Piece | undefined>> = Array(
@@ -68,9 +78,10 @@ export class Board {
 
   /**
    * Checks if a Piece is present at the specified Position
-   * @param board
-   * @param position
-   * @returns boolean
+   *
+   * @param {Board} board Board to check
+   * @param {Position} position Position to check
+   * @returns {boolean}
    */
   static hasPiece(board: Board, position: Position): boolean {
     if (
@@ -87,10 +98,11 @@ export class Board {
   }
 
   /**
-   * Returns a piece at a specific position
-   * @param board
-   * @param position
-   * @returns Piece
+   * Returns a piece at a specific position, if present
+   *
+   * @param {Board} board
+   * @param {Position} position
+   * @returns {Piece | undefined}
    */
   static getPiece(board: Board, position: Position): Piece | undefined {
     return board.pieces.find(
@@ -103,9 +115,10 @@ export class Board {
 
   /**
    * Returns all pieces still present of a select player
-   * @param piece
-   * @param board
-   * @returns Array<Path>
+   *
+   * @param {Piece} piece
+   * @param {Board} board
+   * @returns {Array<Path>}
    */
   static getPlayerPieces(board: Board, player: Player): Array<Piece> {
     return board.pieces.filter((piece) => piece.player.id == player.id);
@@ -113,9 +126,12 @@ export class Board {
 
   /**
    * Returns all possible moves a piece can make
-   * @param piece
-   * @param board
-   * @returns Array<Path>
+   * Involves a recursive function "search" that studies all the paths
+   *  a piece can take
+   *
+   * @param {Piece} piece
+   * @param {Board} board
+   * @returns {Array<Path>}
    */
   static possiblePaths(board: Board, piece: Piece): Array<Path> {
     let possible = new Array<Path>();
@@ -235,11 +251,13 @@ export class Board {
       return paths;
     };
 
+    // Sort the possible paths by number of eaten pieces
     let paths = search({
       position: piece.position,
       directions: directions,
     }).sort((a, b) => b.getEaten(board).length - a.getEaten(board).length);
 
+    // Filter the possible paths: Only keep the paths with the most number of eaten pieces
     let filtered = paths.filter(
       (path, index) =>
         path.getEaten(board).length == paths[0].getEaten(board).length &&
@@ -251,9 +269,10 @@ export class Board {
 
   /**
    * Returns the mandatory path if present
+   *
    * @param piece
    * @param board
-   * @returns Array<Path>
+   * @returns {Array<Path>}
    */
   static mandatoryPaths(board: Board, turn: Player): Array<Path> {
     let playerPieces = Board.getPlayerPieces(board, turn);
@@ -281,7 +300,9 @@ export class Board {
 
   /**
    * Generates an initial checkers board layout
-   * @returns Board
+   *
+   * @param {Array<Player>} players
+   * @returns {Board}
    */
   static startBoard(players: Array<Player>): Board {
     let pieceIndex = 0;
@@ -317,7 +338,8 @@ export class Board {
 
   /**
    * Generates a disabled random checkers board layout
-   * @returns Board
+   *
+   * @returns {Board}
    */
   static randomBoard(): Board {
     let pieces: Array<Piece> = Array();

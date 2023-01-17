@@ -7,10 +7,17 @@ interface PathInterface {
   mandatory?: boolean;
 }
 
+/**
+ * Class wrapper of the state of the Path a piece can take when making a move.
+ *
+ * @property {Array<Position>} steps list of Positions, the steps taken in a certain path.
+ * @property {boolean} mandatory If the current path is mandatory according to the rules of the game.
+ */
 export class Path {
   steps: Array<Position>;
   mandatory: boolean;
 
+  // Used when comparing Paths
   valueOf() {
     return this.getSteps();
   }
@@ -20,6 +27,12 @@ export class Path {
     this.mandatory = mandatory;
   }
 
+  /**
+   * Compares a given path with the current path
+   *
+   * @param {Path} path Path to compare
+   * @returns {boolean}
+   */
   compare = (path: Path): boolean => {
     if (path.steps.length != this.steps.length) return false;
 
@@ -29,6 +42,12 @@ export class Path {
     return true;
   };
 
+  /**
+   * Checks if the current {@link Path} is included in an array of paths
+   *
+   * @param {Array<Path>} paths
+   * @returns
+   */
   isincluded = (paths: Array<Path>): boolean => {
     for (var index = 0; index < paths.length; index++) {
       if (this.compare(paths[index]) == true) {
@@ -38,6 +57,12 @@ export class Path {
     return false;
   };
 
+  /**
+   * Return list of Pieces that would be eaten with a certain path taken.
+   *
+   * @param {Board} board
+   * @returns {Array<Piece>}
+   */
   getEaten = (board: Board): Array<Piece> => {
     let eaten = [] as Array<Piece>;
     for (let index = 0; index < this.steps.length; index++) {
@@ -61,6 +86,9 @@ export class Path {
     return eaten;
   };
 
+  /**
+   * @returns The number of steps taken in the current path.
+   */
   getSteps = () => {
     return this.steps.length;
   };

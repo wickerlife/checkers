@@ -2,6 +2,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+/**
+ * Navbar with logo
+ *
+ * @returns {JSX.Element} Game component
+ */
 export const Navbar = () => {
   return (
     <div className="px-7 py-[12px] fixed z-20 bg-mistyrose mx-[11px] my-[11px] rounded-[11px]">

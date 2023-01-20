@@ -44,19 +44,20 @@ import { nypink, selectiveyellow } from "../utils/colors";
 export default function Game() {
   const router = useRouter(); // React Router
   const lightRef = useRef() as Ref<DirectionalLight>; // Used for EffectComposer lights and effects
+  const size = useCurrentSize();
 
   // Local state
   const [playerName, setPlayerName] = useState("");
   const [pressedEnter, setPressedEnter] = useState(false);
   const [pressedEscape, setPressedEscape] = useState(false);
-  const size = useCurrentSize();
   const [overlay, setOverlay] = useState(false);
   const [winner, setWinner] = useState<Player | undefined>(undefined);
   const setBoardEnabled = useSetAtom(boardEnabledAtom);
+  const [showHint, setShowHint] = useState(false);
 
   // Global state
   const [gameState, setGameState] = useAtom(gameStateAtom);
-  const setSelected = useSetAtom(selectedAtom);
+  const [selected, setSelected] = useAtom(selectedAtom);
   const setPaths = useSetAtom(pathsAtom);
   const [mandatoryPaths, setMandatoryPaths] = useAtom(mandatoryPathsAtom);
   const [players, setPlayers] = useAtom(playersAtom);
@@ -473,20 +474,32 @@ export default function Game() {
           </div>
         </div>
 
-        {/** Overlay Turn Indicator */}
+        {/* Overlay message: Press a piece to start */}
         <div
-          className={`fixed flex bottom-24 sm:bottom-12 items-center justify-center w-screen flex-col z-30 gap-3 ${
-            gameState == GameState.GameStarted ? "" : "invisible"
+          className={` z-30 fixed flex w-full justify-center bottom-24 sm:bottom-12 ${
+            gameState != GameState.GameStarted || selected != null
+              ? "invisible"
+              : ""
           }`}
         >
-          <div
+          <p
             className={
-              "text-russianviolet font-medium text-sm " +
-              `${mandatoryPaths.length > 0 ? "" : "invisible"}`
+              `${
+                mandatoryPaths.length > 0 ? "text-gray-800" : "text-gray-500"
+              }` + " align-middle"
             }
           >
-            Mandatory Move
-          </div>
+            {mandatoryPaths.length > 0 ? (
+              <p>
+                <b>{turn?.username}</b>, you must make a <b>mandatory move</b>
+                ...
+              </p>
+            ) : (
+              <p>
+                <b>{turn?.username}</b>, click on a piece to select it...
+              </p>
+            )}
+          </p>
         </div>
       </div>
     </>

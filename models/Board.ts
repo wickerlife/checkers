@@ -134,8 +134,6 @@ export class Board {
    * @returns {Array<Path>}
    */
   static possiblePaths(board: Board, piece: Piece): Array<Path> {
-    let possible = new Array<Path>();
-
     let directions = [];
 
     if (!piece.isdama) {
@@ -264,7 +262,23 @@ export class Board {
         path.getSteps() > 1
     );
 
-    return filtered;
+    // Check if path includes DAMAs and if Origin is Dama as well
+    let allowed = [] as Array<Path>;
+    filtered.forEach((path) => {
+      let hasDama = false;
+      path.getEaten(board).forEach((piece) => {
+        if (piece.isdama) hasDama = true;
+      });
+      if (hasDama) {
+        if (piece.isdama) {
+          allowed.push(path);
+        }
+      } else {
+        allowed.push(path);
+      }
+    });
+
+    return allowed;
   }
 
   /**
